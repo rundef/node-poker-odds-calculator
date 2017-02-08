@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "commonjs",
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "inlineSourceMap": false,
+    "inlineSources": false,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "forceConsistentCasingInFileNames": true,
+    "removeComments": false,
+    "declaration": true,
+    "declarationDir": "./dts/"
+  },
+  "exclude": [
+    "node_modules",
+    "test"
+  ]
+}
