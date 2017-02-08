@@ -25,7 +25,7 @@
   "author": "Mickael Burguet <www.rundef.com>",
   "license": "MIT",
   "engines": {
-    "node": ">= 6.2.0",
+    "node": ">= 6.0.0",
     "npm": ">= 3"
   },
   "dependencies": {
