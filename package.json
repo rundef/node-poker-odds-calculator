@@ -1,6 +1,6 @@
 {
   "name": "poker-odds-calculator",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A pre-flop and post-flop odds calculator for Texas Holdem",
   "bin": {
     "poker-odds-calculator": "./dist/bin/poker-odds-calculator.js"
