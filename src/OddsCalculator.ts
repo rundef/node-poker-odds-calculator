@@ -126,6 +126,27 @@ export class OddsCalculator {
       return new HandEquity();
     });
 
+    function selectWinners(simulatedBoard: CardGroup) {
+      let highestRanking: HandRank = null;
+      let highestRankingIndex:Array<number> = [];
+      for (let i = 0; i < cardgroups.length; i++) {
+        const handranking = HandRank.evaluate(
+          cardgroups[i].concat(simulatedBoard)
+        );
+        let isBetter = highestRanking
+          ? handranking.compareTo(highestRanking)
+          : -1;
+        if (highestRanking === null || isBetter >= 0) {
+          if (isBetter == 0) highestRankingIndex.push(i);
+          else highestRankingIndex = [i];
+          highestRanking = handranking;
+        }
+      }
+      for (let i = 0; i < cardgroups.length; i++) {
+        equities[i].addPossibility(highestRankingIndex.indexOf(i) > -1);
+      }
+    }
+
     const jobStartedAt = +new Date();
     if (!board || board.length === 0) {
       iterations = iterations || 100000;
@@ -158,20 +179,7 @@ export class OddsCalculator {
           remainingCards[index5]
         ]);
 
-        let highestRanking: HandRank = null;
-        let highestRankingIndex = -1;
-
-        for (let i = 0; i < cardgroups.length; i++) {
-          const handranking = HandRank.evaluate(cardgroups[i].concat(simulatedBoard));
-          if (highestRanking === null || handranking.compareTo(highestRanking) >= 0) {
-            highestRankingIndex = i;
-            highestRanking = handranking;
-          }
-        }
-
-        for (let i = 0; i < cardgroups.length; i++) {
-          equities[i].addPossibility(i === highestRankingIndex);
-        }
+        selectWinners(simulatedBoard);
       }
       /*
       LOOP  
@@ -199,35 +207,12 @@ export class OddsCalculator {
       */
     } else if (board.length >= 5) {
       iterations = 1;
-      let highestRanking: HandRank = null;
-      let highestRankingIndex = -1;
-      for (let i = 0; i < cardgroups.length; i++) {
-        odds[i] = 0;
-
-        if (i === 0 || handranks[i].compareTo(highestRanking) >= 0) {
-          highestRanking = handranks[i];
-          highestRankingIndex = i;
-        }
-      }
-      odds[highestRankingIndex] = 100;
+      selectWinners(board)
     } else if (board.length === 4) {
       for (const c of remainingCards) {
-        let highestRanking: HandRank = null;
-        let highestRankingIndex = -1;
-
         const simulatedBoard = board.concat(CardGroup.fromCards([c]));
         iterations++;
-        for (let i = 0; i < cardgroups.length; i++) {
-          const handranking = HandRank.evaluate(cardgroups[i].concat(simulatedBoard));
-          if (highestRanking === null || handranking.compareTo(highestRanking) >= 0) {
-            highestRankingIndex = i;
-            highestRanking = handranking;
-          }
-        }
-
-        for (let i = 0; i < cardgroups.length; i++) {
-          equities[i].addPossibility(i === highestRankingIndex);
-        }
+        selectWinners(simulatedBoard)
       }
     } else if (board.length === 3) {
       for (let a = 0; a < remainingCount; a++) {
@@ -237,17 +222,7 @@ export class OddsCalculator {
 
           const simulatedBoard = board.concat(CardGroup.fromCards([remainingCards[a], remainingCards[b]]));
           iterations++;
-          for (let i = 0; i < cardgroups.length; i++) {
-            const handranking = HandRank.evaluate(cardgroups[i].concat(simulatedBoard));
-            if (highestRanking === null || handranking.compareTo(highestRanking) >= 0) {
-              highestRankingIndex = i;
-              highestRanking = handranking;
-            }
-          }
-
-          for (let i = 0; i < cardgroups.length; i++) {
-            equities[i].addPossibility(i === highestRankingIndex);
-          }
+          selectWinners(simulatedBoard);
         }
       }
     }
