@@ -14,7 +14,7 @@ export class CardGroup extends Array {
   public static fromString(s: string): CardGroup {
     const tmp = s.replace(/[^a-z0-9]/gi, '');
     if (tmp.length % 2 !== 0) {
-      throw new Error(`Invalid card group: ${s}`);
+      throw new Error(`Invalid cards: ${s}`);
     }
 
     const cardgroup = new CardGroup();

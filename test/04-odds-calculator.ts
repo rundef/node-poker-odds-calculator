@@ -38,8 +38,8 @@ describe('OddsCalculator', () => {
     const board = CardGroup.fromString('3d,4d,7d,4s,Ts');
     const result = OddsCalculator.calculate([player1Cards, player2Cards], board);
 
-    expect(result.getOdds(0)).to.equal(100);
-    expect(result.getOdds(1)).to.equal(0);
+    expect(result.equities[0].getEquity()).to.equal(100);
+    expect(result.equities[1].getEquity()).to.equal(0);
   });
 
   it('one card left', () => {
@@ -48,32 +48,32 @@ describe('OddsCalculator', () => {
     let board = CardGroup.fromString('2d,Jd,Tc,4s');
     let result = OddsCalculator.calculate([player1Cards, player2Cards], board);
 
-    expect(result.getOdds(0)).to.equal(9);
-    expect(result.getOdds(1)).to.equal(91);
+    expect(result.equities[0].getEquity()).to.equal(9);
+    expect(result.equities[1].getEquity()).to.equal(91);
 
     player1Cards = CardGroup.fromString('AsKc'); // 2 queens + 3 kings + 3 aces / 44 cards left
     player2Cards = CardGroup.fromString('QcQh');
     board = CardGroup.fromString('2d,Jd,Tc,4s');
     result = OddsCalculator.calculate([player1Cards, player2Cards], board);
 
-    expect(result.getOdds(0)).to.equal(18);
-    expect(result.getOdds(1)).to.equal(82);
+    expect(result.equities[0].getEquity()).to.equal(18);
+    expect(result.equities[1].getEquity()).to.equal(82);
 
     player1Cards = CardGroup.fromString('Ad5d'); // 9 diamonds + 2 fives / 44 cards left
     player2Cards = CardGroup.fromString('AhJh');
     board = CardGroup.fromString('2d,Jd,5c,Ts');
     result = OddsCalculator.calculate([player1Cards, player2Cards], board);
 
-    expect(result.getOdds(0)).to.equal(25);
-    expect(result.getOdds(1)).to.equal(75);
+    expect(result.equities[0].getEquity()).to.equal(25);
+    expect(result.equities[1].getEquity()).to.equal(75);
 
     player1Cards = CardGroup.fromString('Kd3d');
     player2Cards = CardGroup.fromString('5c5h');
     board = CardGroup.fromString('Ad,4d,5d,5s');
     result = OddsCalculator.calculate([player1Cards, player2Cards], board);
 
-    expect(result.getOdds(0)).to.equal(2);
-    expect(result.getOdds(1)).to.equal(98);
+    expect(result.equities[0].getEquity()).to.equal(2);
+    expect(result.equities[1].getEquity()).to.equal(98);
   });
 
   it('two cards left', () => {
@@ -82,25 +82,25 @@ describe('OddsCalculator', () => {
     let board = CardGroup.fromString('2d,Kd,8c');
     let result = OddsCalculator.calculate([player1Cards, player2Cards], board);
 
-    expect(result.getOdds(0)).to.equal(9);
-    expect(result.getOdds(1)).to.equal(91);
+    expect(result.equities[0].getEquity()).to.equal(9);
+    expect(result.equities[1].getEquity()).to.equal(91);
 
     player1Cards = CardGroup.fromString('Kd3d');
     player2Cards = CardGroup.fromString('5c5h');
     board = CardGroup.fromString('Ad,4d,5d');
     result = OddsCalculator.calculate([player1Cards, player2Cards], board);
 
-    expect(result.getOdds(0)).to.equal(68);
-    expect(result.getOdds(1)).to.equal(32);
+    expect(result.equities[0].getEquity()).to.equal(67);
+    expect(result.equities[1].getEquity()).to.equal(33);
   });
 
   it('no board', () => {
     const player1Cards = CardGroup.fromString('AcAh');
     const player2Cards = CardGroup.fromString('7c7h');
-    const result = OddsCalculator.calculate([player1Cards, player2Cards], null, 10000);
+    const result = OddsCalculator.calculate([player1Cards, player2Cards], null, 8000);
 
-    const oddsPlayer1 = result.getOdds(0);
-    const oddsPlayer2 = result.getOdds(1);
+    const oddsPlayer1 = result.equities[0].getEquity();
+    const oddsPlayer2 = result.equities[1].getEquity();
 
     // aces are roughly a 80-20 favorite
     expect(oddsPlayer1).to.be.above(75);

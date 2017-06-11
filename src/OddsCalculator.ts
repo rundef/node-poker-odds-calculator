@@ -6,16 +6,20 @@ import * as _ from 'lodash';
 class HandEquity {
   protected possibleHandsCount: number;
   protected bestHandCount: number;
+  protected tieHandCount: number;
 
   public constructor() {
     this.possibleHandsCount = 0;
     this.bestHandCount = 0;
+    this.tieHandCount = 0;
   }
 
-  public addPossibility(isBestHand: boolean): void {
+  public addPossibility(isBestHand: boolean, isTie: boolean): void {
     this.possibleHandsCount++;
     if (isBestHand) {
       this.bestHandCount++;
+    } else if (isTie) {
+      this.tieHandCount++;
     }
   }
 
@@ -25,6 +29,22 @@ class HandEquity {
     }
     return Math.round(this.bestHandCount * 100.0 / this.possibleHandsCount);
   }
+
+  public getTiePercentage(): number {
+    if (this.possibleHandsCount === 0) {
+      return 0;
+    }
+    return Math.round(this.tieHandCount * 100.0 / this.possibleHandsCount);
+  }
+
+  public toString(): string {
+    let s: string = `${this.getEquity()}%`;
+    let tie: number = this.getTiePercentage();
+    if (tie > 0) {
+      s += ` (Tie: ${tie}%)`;
+    }
+    return s;
+  }
 }
 
 export class OddsCalculator {
@@ -32,9 +52,10 @@ export class OddsCalculator {
   protected handranks: HandRank[];
   protected iterations: number;
   protected elapsedTime: number;
+  public equities: HandEquity[];
 
-  protected constructor(odds: number[], handranks: HandRank[], iterations: number, elapsedTime: number) {
-    this.odds = odds;
+  protected constructor(equities: HandEquity[], handranks: HandRank[], iterations: number, elapsedTime: number) {
+    this.equities = equities;
     this.handranks = handranks;
     this.iterations = iterations;
     this.elapsedTime = elapsedTime;
@@ -126,14 +147,14 @@ export class OddsCalculator {
       return new HandEquity();
     });
 
-    function selectWinners(simulatedBoard: CardGroup) {
+    const selectWinners = function(simulatedBoard: CardGroup) {
       let highestRanking: HandRank = null;
       let highestRankingIndex:Array<number> = [];
       for (let i = 0; i < cardgroups.length; i++) {
         const handranking = HandRank.evaluate(
           cardgroups[i].concat(simulatedBoard)
         );
-        let isBetter = highestRanking
+        const isBetter = highestRanking
           ? handranking.compareTo(highestRanking)
           : -1;
         if (highestRanking === null || isBetter >= 0) {
@@ -143,9 +164,18 @@ export class OddsCalculator {
         }
       }
       for (let i = 0; i < cardgroups.length; i++) {
-        equities[i].addPossibility(highestRankingIndex.indexOf(i) > -1);
+        let isWinning: boolean = false;
+        let isTie: boolean = false;
+
+        if (highestRankingIndex.length > 1) {
+          isTie = (highestRankingIndex.indexOf(i) > -1);
+        } else {
+          isWinning = (highestRankingIndex.indexOf(i) > -1);
+        }
+
+        equities[i].addPossibility(isWinning, isTie);
       }
-    }
+    };
 
     const jobStartedAt = +new Date();
     if (!board || board.length === 0) {
@@ -181,38 +211,14 @@ export class OddsCalculator {
 
         selectWinners(simulatedBoard);
       }
-      /*
-      LOOP  
-      
-
-        HandRanking highestRanking = null;
-        int highestRankingIndex = -1;
-
-        for(int z = 0; z < handsCount; z++) {
-          Hand h = mHands.get(z);
-          HandRanking hr = HandRanking.evaluate(h.getCard(0), h.getCard(1), mBoardCards.get(0), mBoardCards.get(1), mBoardCards.get(2), mBoardCards.get(3), mBoardCards.get(4));
-
-          if(highestRanking == null || hr.compareTo(highestRanking) >= 0) {
-            highestRankingIndex = z;
-            highestRanking = hr;
-          }
-        }
-
-        for(int z = 0; z < handsCount; z++) {
-          mEquities.get(z).addPossibleHand(z == highestRankingIndex);
-        }
-      }
-
-      mBoardCards.clear();
-      */
     } else if (board.length >= 5) {
       iterations = 1;
-      selectWinners(board)
+      selectWinners(board);
     } else if (board.length === 4) {
       for (const c of remainingCards) {
         const simulatedBoard = board.concat(CardGroup.fromCards([c]));
         iterations++;
-        selectWinners(simulatedBoard)
+        selectWinners(simulatedBoard);
       }
     } else if (board.length === 3) {
       for (let a = 0; a < remainingCount; a++) {
@@ -227,18 +233,8 @@ export class OddsCalculator {
       }
     }
 
-    if (odds.length === 0) {
-      odds = equities.map((e: HandEquity): number => {
-        return e.getEquity();
-      });
-    }
-
     const jobEndedAt = +new Date();
-    return new OddsCalculator(odds, handranks, iterations, jobEndedAt - jobStartedAt);
-  }
-
-  public getOdds(index: number): number {
-    return this.odds[index];
+    return new OddsCalculator(equities, handranks, iterations, jobEndedAt - jobStartedAt);
   }
 
   public getHandRank(index: number): HandRank {

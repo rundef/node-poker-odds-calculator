@@ -24,7 +24,7 @@ describe('CardGroup', () => {
     });
 
     it('throws exception', () => {
-      expect(CardGroup.fromString.bind(null, 'Jhh')).to.throw(Error, 'Invalid card group: Jhh');
+      expect(CardGroup.fromString.bind(null, 'Jhh')).to.throw(Error, 'Invalid cards: Jhh');
     });
   });
 

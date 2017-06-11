@@ -85,12 +85,30 @@ export class HandRank {
 
     // Straight flush
     if (flushSuit > 0) {
-      if (straightCardsCount === 5) {
+      if (straightCardsCount >= 5) {
         const straightFlushCards = _.filter(cardgroup, (card: Card): boolean => {
           return card.getSuit() === flushSuit && card.getRank() <= straightMaxCardRank;
         });
-        if (straightFlushCards.length === 5) {
-          return new HandRank(HandRank.STRAIGHT_FLUSH, straightFlushCards.slice(0, 5));
+        if (straightFlushCards.length >= 5) {
+          let isStraightFlush: boolean = true;
+          for (let i = 1; i <= 4; i++) {
+            if (straightFlushCards[i].getRank() != straightFlushCards[i - 1].getRank() - 1) {
+              isStraightFlush = false;
+              break;
+            }
+          }
+
+          if (isStraightFlush) {
+            return new HandRank(HandRank.STRAIGHT_FLUSH, straightFlushCards.slice(0, 5));
+          }
+        } else if (straightFlushCards.length === 4 && straightFlushCards[0].getRank() === Rank.FIVE) {
+          const aceCards = _.filter(cardgroup, (card: Card): boolean => {
+            return card.getSuit() === flushSuit && card.getRank() === Rank.ACE;
+          });
+
+          if (aceCards.length) {
+            return new HandRank(HandRank.STRAIGHT_FLUSH, straightFlushCards.concat(aceCards[0]));
+          }
         }
       } else if (straightCardsCount === 4 && straightMaxCardRank === Rank.FIVE) {
         // Five high straight flush (5-4-3-2-A)
@@ -116,10 +134,14 @@ export class HandRank {
     }
 
     // Full house
-    if (tripRanks.length == 1 && pairRanks.length == 1) {
+    if (tripRanks.length == 1 && pairRanks.length >= 1) {
       const tripCards = _.filter(cardgroup, { rank: tripRanks[0] });
       const pairCards = _.filter(cardgroup, { rank: pairRanks[0] });
       return new HandRank(HandRank.FULL_HOUSE, tripCards.concat(pairCards));
+    } else if (tripRanks.length > 1) {
+      const tripCards = _.filter(cardgroup, { rank: tripRanks[0] });
+      const pairCards = _.filter(cardgroup, { rank: tripRanks[1] });
+      return new HandRank(HandRank.FULL_HOUSE, tripCards.concat(pairCards.slice(0, 2)));
     }
 
     // Flush
