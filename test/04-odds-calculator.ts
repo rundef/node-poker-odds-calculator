@@ -97,7 +97,7 @@ describe('OddsCalculator', () => {
   it('no board', () => {
     const player1Cards = CardGroup.fromString('AcAh');
     const player2Cards = CardGroup.fromString('7c7h');
-    const result = OddsCalculator.calculate([player1Cards, player2Cards], null, 8000);
+    const result = OddsCalculator.calculate([player1Cards, player2Cards], null, 10000);
 
     const oddsPlayer1 = result.equities[0].getEquity();
     const oddsPlayer2 = result.equities[1].getEquity();

@@ -5,7 +5,7 @@ describe('OddsCalculator (ties)', () => {
   it('no board', () => {
     const player1Cards = CardGroup.fromString('AsAc');
     const player2Cards = CardGroup.fromString('AhAd');
-    const result = OddsCalculator.calculate([player1Cards, player2Cards], null, 8000);
+    const result = OddsCalculator.calculate([player1Cards, player2Cards], null, 10000);
 
     const oddsPlayer1 = result.equities[0].getEquity();
     const oddsPlayer2 = result.equities[1].getEquity();
@@ -32,7 +32,7 @@ describe('OddsCalculator (ties)', () => {
     const player1Cards = CardGroup.fromString('AsAc');
     const player2Cards = CardGroup.fromString('AhAd');
     const player3Cards = CardGroup.fromString('KsKc');
-    const result = OddsCalculator.calculate([player1Cards, player2Cards, player3Cards], null, 8000);
+    const result = OddsCalculator.calculate([player1Cards, player2Cards, player3Cards], null, 10000);
 
     const oddsPlayer1 = result.equities[0].getEquity();
     const oddsPlayer2 = result.equities[1].getEquity();

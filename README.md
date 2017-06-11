@@ -45,8 +45,8 @@ const board = CardGroup.fromString('7d9dTs');
 
 const result = OddsCalculator.calculate([player1Cards, player2Cards], board);
 
-console.log(`Player #1 - ${player1Cards} - ${result.getOdds(0)}%`);
-console.log(`Player #2 - ${player2Cards} - ${result.getOdds(1)}%`);
+console.log(`Player #1 - ${player1Cards} - ${result.equities[0].getEquity()}%`);
+console.log(`Player #2 - ${player2Cards} - ${result.equities[1].getEquity()}%`);
 ```
 
 ## License
