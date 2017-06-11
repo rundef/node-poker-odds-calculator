@@ -3,7 +3,7 @@ import {CardGroup} from './CardGroup';
 import {HandRank} from './HandRank';
 import * as _ from 'lodash';
 
-class HandEquity {
+export class HandEquity {
   protected possibleHandsCount: number;
   protected bestHandCount: number;
   protected tieHandCount: number;
