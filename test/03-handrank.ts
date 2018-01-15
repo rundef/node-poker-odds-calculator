@@ -292,6 +292,21 @@ describe('HandRank', () => {
     expect(handrank.getHighCards()[4].getRank()).to.equal(Rank.ACE);
 
     expect(handrank.toString()).to.equal('Two pairs: jacks and sevens (A high)');
+
+    // double paired board
+    board = CardGroup.fromString('5h,5s,7c,6c,7d');
+    hand = CardGroup.fromString('JdJc');
+    handrank = HandRank.evaluate(hand.concat(board));
+
+    expect(handrank.getRank()).to.equal(HandRank.TWO_PAIRS);
+    expect(handrank.getHighCards().length).to.equal(5);
+    expect(handrank.getHighCards()[0].getRank()).to.equal(Rank.JACK);
+    expect(handrank.getHighCards()[1].getRank()).to.equal(Rank.JACK);
+    expect(handrank.getHighCards()[2].getRank()).to.equal(Rank.SEVEN);
+    expect(handrank.getHighCards()[3].getRank()).to.equal(Rank.SEVEN);
+    expect(handrank.getHighCards()[4].getRank()).to.equal(Rank.SIX);
+
+    expect(handrank.toString()).to.equal('Two pairs: jacks and sevens (6 high)');
   });
 
   it('detects pair', () => {

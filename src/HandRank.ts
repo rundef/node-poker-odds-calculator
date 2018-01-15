@@ -187,7 +187,7 @@ export class HandRank {
     }
 
     // Two pairs
-    if (pairRanks.length == 2) {
+    if (pairRanks.length >= 2) {
       const pairedHigherCards = _.filter(cardgroup, { rank: pairRanks[0] });
       const pairedLowerCards = _.filter(cardgroup, { rank: pairRanks[1] });
       const unpairedCards = _.reject(
