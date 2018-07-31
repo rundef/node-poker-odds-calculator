@@ -28,9 +28,16 @@ Let's say that we want to know the odds of a player holding the Jâ™¢ and the Qâ™
 
 ```bash
 node_modules/.bin/poker-odds-calculator -b 7d9dTs JhJs JdQd
-node_modules/.bin/poker-odds-calculator -b 7d9dTs7s JhJs JdQd
+node_modules/.bin/poker-odds-calculator --board 7d9dTs7s JhJs JdQd
 ```
 > -b denotes the board
+
+#### Short deck
+ To calculate odds for short deck, override the game variant with -g
+ ```bash
+node_modules/.bin/poker-odds-calculator -g short -b 7d9dTs JhJs JdQd
+node_modules/.bin/poker-odds-calculator --game short --board 7d9dTs7s JhJs JdQd
+```
 
 ## API Usage
 
@@ -47,6 +54,11 @@ const result = OddsCalculator.calculate([player1Cards, player2Cards], board);
 
 console.log(`Player #1 - ${player1Cards} - ${result.equities[0].getEquity()}%`);
 console.log(`Player #2 - ${player2Cards} - ${result.equities[1].getEquity()}%`);
+```
+
+To use Short Deck:
+```js
+const result = OddsCalculator.calculate([player1Cards, player2Cards], board, 'short');
 ```
 
 ## License

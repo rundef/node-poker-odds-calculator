@@ -2,29 +2,34 @@
  * HandRank
  */
 import * as _ from 'lodash';
-import {Card, Rank} from './Card';
-import {CardGroup} from './CardGroup';
+import { Card, Rank } from './Card';
+import { CardGroup } from './CardGroup';
+import { IGameRules } from './GameVariants';
+
+export class HandRankAlias {
+  public static HIGH_CARD: string = 'HIGH_CARD';
+  public static PAIR: string = 'PAIR';
+  public static TWO_PAIRS: string = 'TWO_PAIRS';
+  public static TRIPS: string = 'TRIPS';
+  public static STRAIGHT: string = 'STRAIGHT';
+  public static FLUSH: string = 'FLUSH';
+  public static FULL_HOUSE: string = 'FULL_HOUSE';
+  public static QUADS: string = 'QUADS';
+  public static STRAIGHT_FLUSH: string = 'STRAIGHT_FLUSH';
+}
 
 export class HandRank {
-  public static HIGH_CARD: number = 1;
-  public static PAIR: number = 2;
-  public static TWO_PAIRS: number = 3;
-  public static TRIPS: number = 4;
-  public static STRAIGHT: number = 5;
-  public static FLUSH: number = 6;
-  public static FULL_HOUSE: number = 7;
-  public static QUADS: number = 8;
-  public static STRAIGHT_FLUSH: number = 9;
-
+  protected alias: string;
   protected rank: number;
   protected highcards: Card[];
 
-  protected constructor(rank: number, highcards: Card[]) {
+  protected constructor(rank: number, alias: string, highcards: Card[]) {
     this.rank = rank;
+    this.alias = alias;
     this.highcards = highcards;
   }
 
-  public static evaluate(cardgroup: CardGroup): HandRank {
+  public static evaluate(rules: IGameRules, cardgroup: CardGroup): HandRank {
     cardgroup.sortCards('desc');
 
     // Group card by ranks
@@ -83,19 +88,32 @@ export class HandRank {
           }
 
           if (isStraightFlush) {
-            return new HandRank(HandRank.STRAIGHT_FLUSH, straightFlushCards.slice(0, 5));
+            return new HandRank(rules.STRAIGHT_FLUSH, HandRankAlias.STRAIGHT_FLUSH, straightFlushCards.slice(0, 5));
           }
-        } else if (straightFlushCards.length === 4 && straightFlushCards[0].getRank() === Rank.FIVE) {
+        } else if (straightFlushCards.length === 4 &&
+          (
+            // Five high straight (5-4-3-2-A)
+            (rules.A2345_STRAIGHT &&  straightFlushCards[0].getRank() === Rank.FIVE) ||
+            // Five high straight (9-8-7-6-A)
+            (rules.A6789_STRAIGHT &&  straightFlushCards[0].getRank() === Rank.NINE)
+          )
+        ) {
           const aceCards: Card[] = _.filter(cardgroup, (card: Card): boolean => {
             return card.getSuit() === flushSuit && card.getRank() === Rank.ACE;
           });
 
           if (aceCards.length) {
-            return new HandRank(HandRank.STRAIGHT_FLUSH, straightFlushCards.concat(aceCards[0]));
+            return new HandRank(rules.STRAIGHT_FLUSH, HandRankAlias.STRAIGHT_FLUSH, straightFlushCards.concat(aceCards[0]));
           }
         }
-      } else if (straightCardsCount === 4 && straightMaxCardRank === Rank.FIVE) {
-        // Five high straight flush (5-4-3-2-A)
+      } else if (straightCardsCount === 4 &&
+        (
+          // Five high straight (5-4-3-2-A)
+          (rules.A2345_STRAIGHT && straightMaxCardRank === Rank.FIVE) ||
+          // Nine high straight (9-8-7-6-A)
+          (rules.A6789_STRAIGHT && straightMaxCardRank === Rank.NINE)
+        )
+      ) {
         const aceCards: Card[] = _.filter(cardgroup, (card: Card): boolean => {
           return card.getSuit() === flushSuit && card.getRank() === Rank.ACE;
         });
@@ -104,7 +122,7 @@ export class HandRank {
             return card.getSuit() === flushSuit && card.getRank() <= straightMaxCardRank;
           });
           if (straightFlushCards.length === 4) {
-            return new HandRank(HandRank.STRAIGHT_FLUSH, straightFlushCards.concat(aceCards[0]).slice(0, 5));
+            return new HandRank(rules.STRAIGHT_FLUSH, HandRankAlias.STRAIGHT_FLUSH, straightFlushCards.concat(aceCards[0]).slice(0, 5));
           }
         }
       }
@@ -114,7 +132,7 @@ export class HandRank {
     if (quadRanks.length === 1) {
       const quadCards: Card[] = _.filter(cardgroup, (card: Card) => card.getRank() === quadRanks[0]);
       const cards: Card[] = _.reject(cardgroup, (card: Card) => card.getRank() === quadRanks[0]);
-      return new HandRank(HandRank.QUADS, quadCards.concat(cards).slice(0, 5));
+      return new HandRank(rules.QUADS, HandRankAlias.QUADS, quadCards.concat(cards).slice(0, 5));
     }
 
     // Full house
@@ -125,7 +143,7 @@ export class HandRank {
       const pairCards: Card[] = _.filter(cardgroup, (card: Card): boolean => {
         return card.getRank() === pairRanks[0];
       });
-      return new HandRank(HandRank.FULL_HOUSE, tripCards.concat(pairCards));
+      return new HandRank(rules.FULL_HOUSE, HandRankAlias.FULL_HOUSE, tripCards.concat(pairCards));
     } else if (tripRanks.length > 1) {
       const tripCards: Card[] = _.filter(cardgroup, (card: Card): boolean => {
         return card.getRank() === tripRanks[0];
@@ -133,7 +151,7 @@ export class HandRank {
       const pairCards: Card[] = _.filter(cardgroup, (card: Card): boolean => {
         return card.getRank() === tripRanks[1];
       });
-      return new HandRank(HandRank.FULL_HOUSE, tripCards.concat(pairCards.slice(0, 2)));
+      return new HandRank(rules.FULL_HOUSE, HandRankAlias.FULL_HOUSE, tripCards.concat(pairCards.slice(0, 2)));
     }
 
     // Flush
@@ -141,7 +159,7 @@ export class HandRank {
       const flushCards: Card[] = _.filter(cardgroup, (card: Card): boolean => {
         return card.getSuit() === flushSuit;
       });
-      return new HandRank(HandRank.FLUSH, flushCards.slice(0, 5));
+      return new HandRank(rules.FLUSH, HandRankAlias.FLUSH, flushCards.slice(0, 5));
     }
 
     // Straight
@@ -154,9 +172,15 @@ export class HandRank {
           return c1.getRank() === c2.getRank();
         }
       );
-      return new HandRank(HandRank.STRAIGHT, straightCards.slice(0, 5));
-    } else if (straightCardsCount === 4 && straightMaxCardRank === Rank.FIVE) {
-      // Five high straight (5-4-3-2-A)
+      return new HandRank(rules.STRAIGHT, HandRankAlias.STRAIGHT, straightCards.slice(0, 5));
+    } else if (straightCardsCount === 4 &&
+      (
+        // Five high straight (5-4-3-2-A)
+        (rules.A2345_STRAIGHT && straightMaxCardRank === Rank.FIVE) ||
+        // Five high straight (9-8-7-6-A)
+        (rules.A6789_STRAIGHT && straightMaxCardRank === Rank.NINE)
+      )
+      ) {
       const aceCards: Card[] = _.filter(cardgroup, (card: Card): boolean => {
         return card.getRank() === Rank.ACE;
       });
@@ -169,7 +193,7 @@ export class HandRank {
             return c1.getRank() === c2.getRank();
           }
         );
-        return new HandRank(HandRank.STRAIGHT, straightCards.concat(aceCards[0]).slice(0, 5));
+        return new HandRank(rules.STRAIGHT, HandRankAlias.STRAIGHT, straightCards.concat(aceCards[0]).slice(0, 5));
       }
     }
 
@@ -181,7 +205,7 @@ export class HandRank {
       const cards: Card[] = _.reject(cardgroup, (card: Card): boolean => {
         return card.getRank() === tripRanks[0];
       });
-      return new HandRank(HandRank.TRIPS, tripCards.concat(cards).slice(0, 5));
+      return new HandRank(rules.TRIPS, HandRankAlias.TRIPS, tripCards.concat(cards).slice(0, 5));
     }
 
     // Two pairs
@@ -198,7 +222,10 @@ export class HandRank {
           (card: Card) => card.getRank() === pairRanks[0]),
         (card: Card) => card.getRank() === pairRanks[1]
       );
-      return new HandRank(HandRank.TWO_PAIRS, pairedHigherCards.concat(pairedLowerCards).concat(unpairedCards).slice(0, 5));
+      return new HandRank(rules.TWO_PAIRS, HandRankAlias.TWO_PAIRS,
+                          pairedHigherCards.concat(pairedLowerCards)
+                                           .concat(unpairedCards)
+                                           .slice(0, 5));
     }
 
     // One pair
@@ -209,11 +236,11 @@ export class HandRank {
       const unpairedCards: Card[] = _.reject(cardgroup, (card: Card): boolean => {
         return card.getRank() === pairRanks[0];
       });
-      return new HandRank(HandRank.PAIR, pairedCards.concat(unpairedCards).slice(0, 5));
+      return new HandRank(rules.PAIR, HandRankAlias.PAIR, pairedCards.concat(unpairedCards).slice(0, 5));
     }
 
     // High card
-    return new HandRank(HandRank.HIGH_CARD, cardgroup.slice(0, 5));
+    return new HandRank(rules.HIGH_CARD, HandRankAlias.HIGH_CARD, cardgroup.slice(0, 5));
   }
 
   public getHighCards(): Card[] {
@@ -239,36 +266,36 @@ export class HandRank {
   public toString(): string {
     let showHighcards: number = 0;
     let s: string = '';
-    switch (this.rank) {
-      case HandRank.STRAIGHT_FLUSH:
+    switch (this.alias) {
+      case HandRankAlias.STRAIGHT_FLUSH:
         if (this.highcards[0].getRank() === Rank.ACE) {
           s = 'Royal flush';
         } else {
           s = _.capitalize(this.highcards[0].toString(false, true)) + ' high straight flush';
         }
         break;
-      case HandRank.QUADS:
+      case HandRankAlias.QUADS:
         s = 'Quad ' + this.highcards[0].toString(false, true, true);
         showHighcards = 1;
         break;
-      case HandRank.FULL_HOUSE:
+      case HandRankAlias.FULL_HOUSE:
         s = `Full house: ${this.highcards[0].toString(false, true, true)} full of ${this.highcards[4].toString(false, true, true)}`;
         break;
-      case HandRank.FLUSH:
+      case HandRankAlias.FLUSH:
         s = _.capitalize(this.highcards[0].toString(false, true)) + ' high flush';
         break;
-      case HandRank.STRAIGHT:
+      case HandRankAlias.STRAIGHT:
         s = _.capitalize(this.highcards[0].toString(false, true)) + ' high straight';
         break;
-      case HandRank.TRIPS:
+      case HandRankAlias.TRIPS:
         s = `Trip ${this.highcards[0].toString(false, true, true)}`;
         showHighcards = 2;
         break;
-      case HandRank.TWO_PAIRS:
+      case HandRankAlias.TWO_PAIRS:
         s = `Two pairs: ${this.highcards[0].toString(false, true, true)} and ${this.highcards[2].toString(false, true, true)}`;
         showHighcards = 1;
         break;
-      case HandRank.PAIR:
+      case HandRankAlias.PAIR:
         s = `Pair of ${this.highcards[0].toString(false, true, true)}`;
         showHighcards = 3;
         break;

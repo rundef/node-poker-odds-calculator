@@ -2,15 +2,16 @@
  * Tests for HandRank class
  */
 import { expect } from 'chai';
-import { CardGroup, HandRank, Rank } from '../src/index';
+import { CardGroup, FullDeckRules, HandRank, Rank } from '../src/index';
 
 describe('HandRank', () => {
   it('detects royal flush', () => {
+    const rules: FullDeckRules = new FullDeckRules();
     const board: CardGroup = CardGroup.fromString('Ad,Ah,Qd,Td,9h');
     const hand: CardGroup = CardGroup.fromString('KdJd');
-    const handrank: HandRank = HandRank.evaluate(hand.concat(board));
+    const handrank: HandRank = HandRank.evaluate(rules, hand.concat(board));
 
-    expect(handrank.getRank()).to.equal(HandRank.STRAIGHT_FLUSH);
+    expect(handrank.getRank()).to.equal(rules.STRAIGHT_FLUSH);
     expect(handrank.getHighCards().length).to.equal(5);
     expect(handrank.getHighCards()[0].getRank()).to.equal(Rank.ACE);
     expect(handrank.getHighCards()[1].getRank()).to.equal(Rank.KING);
@@ -22,11 +23,12 @@ describe('HandRank', () => {
   });
 
   it('detects straight flush', () => {
-    let board : CardGroup= CardGroup.fromString('3d,4d,7d,4s,Ts');
+    const rules: FullDeckRules = new FullDeckRules();
+    let board: CardGroup = CardGroup.fromString('3d,4d,7d,4s,Ts');
     let hand: CardGroup = CardGroup.fromString('5d6d');
-    let handrank: HandRank = HandRank.evaluate(hand.concat(board));
+    let handrank: HandRank = HandRank.evaluate(rules, hand.concat(board));
 
-    expect(handrank.getRank()).to.equal(HandRank.STRAIGHT_FLUSH);
+    expect(handrank.getRank()).to.equal(rules.STRAIGHT_FLUSH);
     expect(handrank.getHighCards().length).to.equal(5);
     expect(handrank.getHighCards()[0].getRank()).to.equal(Rank.SEVEN);
     expect(handrank.getHighCards()[1].getRank()).to.equal(Rank.SIX);
@@ -36,9 +38,9 @@ describe('HandRank', () => {
 
     board = CardGroup.fromString('3d4dTcAs5d');
     hand = CardGroup.fromString('6d2d');
-    handrank = HandRank.evaluate(hand.concat(board));
+    handrank = HandRank.evaluate(rules, hand.concat(board));
 
-    expect(handrank.getRank()).to.equal(HandRank.STRAIGHT_FLUSH);
+    expect(handrank.getRank()).to.equal(rules.STRAIGHT_FLUSH);
     expect(handrank.getHighCards().length).to.equal(5);
     expect(handrank.getHighCards()[0].getRank()).to.equal(Rank.SIX);
     expect(handrank.getHighCards()[1].getRank()).to.equal(Rank.FIVE);
@@ -50,9 +52,9 @@ describe('HandRank', () => {
 
     board = CardGroup.fromString('4s7s8d8s2s');
     hand = CardGroup.fromString('5s6s');
-    handrank = HandRank.evaluate(hand.concat(board));
+    handrank = HandRank.evaluate(rules, hand.concat(board));
 
-    expect(handrank.getRank()).to.equal(HandRank.STRAIGHT_FLUSH);
+    expect(handrank.getRank()).to.equal(rules.STRAIGHT_FLUSH);
     expect(handrank.getHighCards().length).to.equal(5);
     expect(handrank.getHighCards()[0].getRank()).to.equal(Rank.EIGHT);
     expect(handrank.getHighCards()[1].getRank()).to.equal(Rank.SEVEN);
@@ -64,11 +66,12 @@ describe('HandRank', () => {
   });
 
   it('detects ace-low straight flush', () => {
+    const rules: FullDeckRules = new FullDeckRules();
     let board: CardGroup = CardGroup.fromString('3d,4d,7s,4s,2d');
     let hand: CardGroup = CardGroup.fromString('Ad5d');
-    let handrank: HandRank = HandRank.evaluate(hand.concat(board));
+    let handrank: HandRank = HandRank.evaluate(rules, hand.concat(board));
 
-    expect(handrank.getRank()).to.equal(HandRank.STRAIGHT_FLUSH);
+    expect(handrank.getRank()).to.equal(rules.STRAIGHT_FLUSH);
     expect(handrank.getHighCards().length).to.equal(5);
     expect(handrank.getHighCards()[0].getRank()).to.equal(Rank.FIVE);
     expect(handrank.getHighCards()[1].getRank()).to.equal(Rank.FOUR);
@@ -78,9 +81,9 @@ describe('HandRank', () => {
 
     board = CardGroup.fromString('Ad,4d,5d,5c,2d');
     hand = CardGroup.fromString('Kd3d');
-    handrank = HandRank.evaluate(hand.concat(board));
+    handrank = HandRank.evaluate(rules, hand.concat(board));
 
-    expect(handrank.getRank()).to.equal(HandRank.STRAIGHT_FLUSH);
+    expect(handrank.getRank()).to.equal(rules.STRAIGHT_FLUSH);
     expect(handrank.getHighCards().length).to.equal(5);
     expect(handrank.getHighCards()[0].getRank()).to.equal(Rank.FIVE);
     expect(handrank.getHighCards()[1].getRank()).to.equal(Rank.FOUR);
@@ -92,9 +95,9 @@ describe('HandRank', () => {
 
     board = CardGroup.fromString('3s4s5s7h6d');
     hand = CardGroup.fromString('As2s');
-    handrank = HandRank.evaluate(hand.concat(board));
+    handrank = HandRank.evaluate(rules, hand.concat(board));
 
-    expect(handrank.getRank()).to.equal(HandRank.STRAIGHT_FLUSH);
+    expect(handrank.getRank()).to.equal(rules.STRAIGHT_FLUSH);
     expect(handrank.getHighCards().length).to.equal(5);
     expect(handrank.getHighCards()[0].getRank()).to.equal(Rank.FIVE);
     expect(handrank.getHighCards()[1].getRank()).to.equal(Rank.FOUR);
@@ -106,11 +109,12 @@ describe('HandRank', () => {
   });
 
   it('detects quads', () => {
+    const rules: FullDeckRules = new FullDeckRules();
     const board: CardGroup = CardGroup.fromString('2s,4d,7d,4s,Ts');
     const hand: CardGroup = CardGroup.fromString('4h4c');
-    const handrank: HandRank = HandRank.evaluate(hand.concat(board));
+    const handrank: HandRank = HandRank.evaluate(rules, hand.concat(board));
 
-    expect(handrank.getRank()).to.equal(HandRank.QUADS);
+    expect(handrank.getRank()).to.equal(rules.QUADS);
     expect(handrank.getHighCards().length).to.equal(5);
     expect(handrank.getHighCards()[0].getRank()).to.equal(Rank.FOUR);
     expect(handrank.getHighCards()[1].getRank()).to.equal(Rank.FOUR);
@@ -122,11 +126,12 @@ describe('HandRank', () => {
   });
 
   it('detects fullhouse', () => {
+    const rules: FullDeckRules = new FullDeckRules();
     let board: CardGroup = CardGroup.fromString('2s,4d,7d,4s,Ts');
     let hand: CardGroup = CardGroup.fromString('ThTd');
-    let handrank: HandRank = HandRank.evaluate(hand.concat(board));
+    let handrank: HandRank = HandRank.evaluate(rules, hand.concat(board));
 
-    expect(handrank.getRank()).to.equal(HandRank.FULL_HOUSE);
+    expect(handrank.getRank()).to.equal(rules.FULL_HOUSE);
     expect(handrank.getHighCards().length).to.equal(5);
     expect(handrank.getHighCards()[0].getRank()).to.equal(Rank.TEN);
     expect(handrank.getHighCards()[1].getRank()).to.equal(Rank.TEN);
@@ -138,9 +143,9 @@ describe('HandRank', () => {
 
     board = CardGroup.fromString('4s7s8c4h7h');
     hand = CardGroup.fromString('8h8d');
-    handrank = HandRank.evaluate(hand.concat(board));
+    handrank = HandRank.evaluate(rules, hand.concat(board));
 
-    expect(handrank.getRank()).to.equal(HandRank.FULL_HOUSE);
+    expect(handrank.getRank()).to.equal(rules.FULL_HOUSE);
     expect(handrank.getHighCards().length).to.equal(5);
     expect(handrank.getHighCards()[0].getRank()).to.equal(Rank.EIGHT);
     expect(handrank.getHighCards()[1].getRank()).to.equal(Rank.EIGHT);
@@ -152,9 +157,9 @@ describe('HandRank', () => {
 
     board = CardGroup.fromString('4s7s8c7d7h');
     hand = CardGroup.fromString('8h8d');
-    handrank = HandRank.evaluate(hand.concat(board));
+    handrank = HandRank.evaluate(rules, hand.concat(board));
 
-    expect(handrank.getRank()).to.equal(HandRank.FULL_HOUSE);
+    expect(handrank.getRank()).to.equal(rules.FULL_HOUSE);
     expect(handrank.getHighCards().length).to.equal(5);
     expect(handrank.getHighCards()[0].getRank()).to.equal(Rank.EIGHT);
     expect(handrank.getHighCards()[1].getRank()).to.equal(Rank.EIGHT);
@@ -166,11 +171,12 @@ describe('HandRank', () => {
   });
 
   it('detects flush', () => {
+    const rules: FullDeckRules = new FullDeckRules();
     let board: CardGroup = CardGroup.fromString('2d,7d,Ts,9d,Th');
     let hand: CardGroup = CardGroup.fromString('JdQd');
-    let handrank: HandRank = HandRank.evaluate(hand.concat(board));
+    let handrank: HandRank = HandRank.evaluate(rules, hand.concat(board));
 
-    expect(handrank.getRank()).to.equal(HandRank.FLUSH);
+    expect(handrank.getRank()).to.equal(rules.FLUSH);
     expect(handrank.getHighCards().length).to.equal(5);
     expect(handrank.getHighCards()[0].getRank()).to.equal(Rank.QUEEN);
     expect(handrank.getHighCards()[1].getRank()).to.equal(Rank.JACK);
@@ -182,9 +188,9 @@ describe('HandRank', () => {
 
     board = CardGroup.fromString('4s7s8c2c2s');
     hand = CardGroup.fromString('5s6s');
-    handrank = HandRank.evaluate(hand.concat(board));
+    handrank = HandRank.evaluate(rules, hand.concat(board));
 
-    expect(handrank.getRank()).to.equal(HandRank.FLUSH);
+    expect(handrank.getRank()).to.equal(rules.FLUSH);
     expect(handrank.getHighCards().length).to.equal(5);
     expect(handrank.getHighCards()[0].getRank()).to.equal(Rank.SEVEN);
     expect(handrank.getHighCards()[1].getRank()).to.equal(Rank.SIX);
@@ -196,9 +202,9 @@ describe('HandRank', () => {
 
     board = CardGroup.fromString('3s4s5c8s6d');
     hand = CardGroup.fromString('As2s');
-    handrank = HandRank.evaluate(hand.concat(board));
+    handrank = HandRank.evaluate(rules, hand.concat(board));
 
-    expect(handrank.getRank()).to.equal(HandRank.FLUSH);
+    expect(handrank.getRank()).to.equal(rules.FLUSH);
     expect(handrank.getHighCards().length).to.equal(5);
     expect(handrank.getHighCards()[0].getRank()).to.equal(Rank.ACE);
     expect(handrank.getHighCards()[1].getRank()).to.equal(Rank.EIGHT);
@@ -210,11 +216,12 @@ describe('HandRank', () => {
   });
 
   it('detects straight', () => {
+    const rules: FullDeckRules = new FullDeckRules();
     let board: CardGroup = CardGroup.fromString('2d,7d,Ts,9d,Th');
     let hand: CardGroup = CardGroup.fromString('8s6h');
-    let handrank: HandRank = HandRank.evaluate(hand.concat(board));
+    let handrank: HandRank = HandRank.evaluate(rules, hand.concat(board));
 
-    expect(handrank.getRank()).to.equal(HandRank.STRAIGHT);
+    expect(handrank.getRank()).to.equal(rules.STRAIGHT);
     expect(handrank.getHighCards().length).to.equal(5);
     expect(handrank.getHighCards()[0].getRank()).to.equal(Rank.TEN);
     expect(handrank.getHighCards()[1].getRank()).to.equal(Rank.NINE);
@@ -224,9 +231,9 @@ describe('HandRank', () => {
 
     board = CardGroup.fromString('3d4sTcAs5s');
     hand = CardGroup.fromString('6s2d');
-    handrank = HandRank.evaluate(hand.concat(board));
+    handrank = HandRank.evaluate(rules, hand.concat(board));
 
-    expect(handrank.getRank()).to.equal(HandRank.STRAIGHT);
+    expect(handrank.getRank()).to.equal(rules.STRAIGHT);
     expect(handrank.getHighCards().length).to.equal(5);
     expect(handrank.getHighCards()[0].getRank()).to.equal(Rank.SIX);
     expect(handrank.getHighCards()[1].getRank()).to.equal(Rank.FIVE);
@@ -238,11 +245,12 @@ describe('HandRank', () => {
   });
 
   it('detects ace-low straight', () => {
+    const rules: FullDeckRules = new FullDeckRules();
     const board: CardGroup = CardGroup.fromString('3d4s9s7s5s');
     const hand: CardGroup = CardGroup.fromString('Ad2d');
-    const handrank: HandRank = HandRank.evaluate(hand.concat(board));
+    const handrank: HandRank = HandRank.evaluate(rules, hand.concat(board));
 
-    expect(handrank.getRank()).to.equal(HandRank.STRAIGHT);
+    expect(handrank.getRank()).to.equal(rules.STRAIGHT);
     expect(handrank.getHighCards().length).to.equal(5);
     expect(handrank.getHighCards()[0].getRank()).to.equal(Rank.FIVE);
     expect(handrank.getHighCards()[1].getRank()).to.equal(Rank.FOUR);
@@ -254,11 +262,12 @@ describe('HandRank', () => {
   });
 
   it('detects trips', () => {
-    let board: CardGroup = CardGroup.fromString('2d,7d,Ts,9d,Th');
-    let hand: CardGroup = CardGroup.fromString('TcJc');
-    let handrank: HandRank = HandRank.evaluate(hand.concat(board));
+    const rules: FullDeckRules = new FullDeckRules();
+    const board: CardGroup = CardGroup.fromString('2d,7d,Ts,9d,Th');
+    const hand: CardGroup = CardGroup.fromString('TcJc');
+    const handrank: HandRank = HandRank.evaluate(rules, hand.concat(board));
 
-    expect(handrank.getRank()).to.equal(HandRank.TRIPS);
+    expect(handrank.getRank()).to.equal(rules.TRIPS);
     expect(handrank.getHighCards().length).to.equal(5);
     expect(handrank.getHighCards()[0].getRank()).to.equal(Rank.TEN);
     expect(handrank.getHighCards()[1].getRank()).to.equal(Rank.TEN);
@@ -270,11 +279,12 @@ describe('HandRank', () => {
   });
 
   it('detects two pairs', () => {
+    const rules: FullDeckRules = new FullDeckRules();
     let board: CardGroup = CardGroup.fromString('2d,7d,Ts,9d,Jh');
     let hand: CardGroup = CardGroup.fromString('TcJc');
-    let handrank: HandRank = HandRank.evaluate(hand.concat(board));
+    let handrank: HandRank = HandRank.evaluate(rules, hand.concat(board));
 
-    expect(handrank.getRank()).to.equal(HandRank.TWO_PAIRS);
+    expect(handrank.getRank()).to.equal(rules.TWO_PAIRS);
     expect(handrank.getHighCards().length).to.equal(5);
     expect(handrank.getHighCards()[0].getRank()).to.equal(Rank.JACK);
     expect(handrank.getHighCards()[1].getRank()).to.equal(Rank.JACK);
@@ -284,9 +294,9 @@ describe('HandRank', () => {
 
     board = CardGroup.fromString('2d,7d,7s,Jh');
     hand = CardGroup.fromString('AcJc');
-    handrank = HandRank.evaluate(hand.concat(board));
+    handrank = HandRank.evaluate(rules, hand.concat(board));
 
-    expect(handrank.getRank()).to.equal(HandRank.TWO_PAIRS);
+    expect(handrank.getRank()).to.equal(rules.TWO_PAIRS);
     expect(handrank.getHighCards().length).to.equal(5);
     expect(handrank.getHighCards()[0].getRank()).to.equal(Rank.JACK);
     expect(handrank.getHighCards()[1].getRank()).to.equal(Rank.JACK);
@@ -299,9 +309,9 @@ describe('HandRank', () => {
     // double paired board
     board = CardGroup.fromString('5h,5s,7c,6c,7d');
     hand = CardGroup.fromString('JdJc');
-    handrank = HandRank.evaluate(hand.concat(board));
+    handrank = HandRank.evaluate(rules, hand.concat(board));
 
-    expect(handrank.getRank()).to.equal(HandRank.TWO_PAIRS);
+    expect(handrank.getRank()).to.equal(rules.TWO_PAIRS);
     expect(handrank.getHighCards().length).to.equal(5);
     expect(handrank.getHighCards()[0].getRank()).to.equal(Rank.JACK);
     expect(handrank.getHighCards()[1].getRank()).to.equal(Rank.JACK);
@@ -313,11 +323,12 @@ describe('HandRank', () => {
   });
 
   it('detects pair', () => {
+    const rules: FullDeckRules = new FullDeckRules();
     const board: CardGroup = CardGroup.fromString('2d,7d,Ts,9d,6s');
     let hand: CardGroup = CardGroup.fromString('TcJc');
-    let handrank: HandRank = HandRank.evaluate(hand.concat(board));
+    let handrank: HandRank = HandRank.evaluate(rules, hand.concat(board));
 
-    expect(handrank.getRank()).to.equal(HandRank.PAIR);
+    expect(handrank.getRank()).to.equal(rules.PAIR);
     expect(handrank.getHighCards().length).to.equal(5);
     expect(handrank.getHighCards()[0].getRank()).to.equal(Rank.TEN);
     expect(handrank.getHighCards()[1].getRank()).to.equal(Rank.TEN);
@@ -326,9 +337,9 @@ describe('HandRank', () => {
     expect(handrank.getHighCards()[4].getRank()).to.equal(Rank.SEVEN);
 
     hand = CardGroup.fromString('JdJh');
-    handrank = HandRank.evaluate(hand.concat(board));
+    handrank = HandRank.evaluate(rules, hand.concat(board));
 
-    expect(handrank.getRank()).to.equal(HandRank.PAIR);
+    expect(handrank.getRank()).to.equal(rules.PAIR);
     expect(handrank.getHighCards().length).to.equal(5);
     expect(handrank.getHighCards()[0].getRank()).to.equal(Rank.JACK);
     expect(handrank.getHighCards()[1].getRank()).to.equal(Rank.JACK);
@@ -340,11 +351,12 @@ describe('HandRank', () => {
   });
 
   it('detects high card', () => {
+    const rules: FullDeckRules = new FullDeckRules();
     const board: CardGroup = CardGroup.fromString('2c,4c,Jd,9d,6d');
-    const hand : CardGroup = CardGroup.fromString('KcQc');
-    const handrank : HandRank = HandRank.evaluate(<CardGroup> hand.concat(board));
+    const hand: CardGroup = CardGroup.fromString('KcQc');
+    const handrank: HandRank = HandRank.evaluate(rules, <CardGroup> hand.concat(board));
 
-    expect(handrank.getRank()).to.equal(HandRank.HIGH_CARD);
+    expect(handrank.getRank()).to.equal(rules.HIGH_CARD);
     expect(handrank.getHighCards().length).to.equal(5);
     expect(handrank.getHighCards()[0].getRank()).to.equal(Rank.KING);
     expect(handrank.getHighCards()[1].getRank()).to.equal(Rank.QUEEN);

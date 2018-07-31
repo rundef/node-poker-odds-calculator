@@ -68,13 +68,6 @@ export class Rank {
     { singular: 'ace', plural: 'aces' }
   ];
 
-  public static all(): number[] {
-    return [
-      Rank.TWO, Rank.THREE, Rank.FOUR, Rank.FIVE, Rank.SIX, Rank.SEVEN,
-      Rank.EIGHT, Rank.NINE, Rank.TEN, Rank.JACK, Rank.QUEEN, Rank.KING, Rank.ACE
-    ];
-  }
-
   public static fromString(s: string): number {
     switch (s) {
       case 't':
@@ -94,6 +87,13 @@ export class Rank {
         }
         return n;
     }
+  }
+
+  public all(): number[] {
+    return [
+      Rank.TWO, Rank.THREE, Rank.FOUR, Rank.FIVE, Rank.SIX, Rank.SEVEN,
+      Rank.EIGHT, Rank.NINE, Rank.TEN, Rank.JACK, Rank.QUEEN, Rank.KING, Rank.ACE
+    ];
   }
 }
 

@@ -41,4 +41,13 @@ describe('Card', () => {
       }
     });
   });
+
+  describe('Rank', () => {
+    it('returns default list', () => {
+      const ranks: Rank = new Rank();
+      const list: number[] = ranks.all();
+      expect(list).to.be.length(13);
+      expect(list).to.be.an.instanceof(Array);
+    });
+  });
 });

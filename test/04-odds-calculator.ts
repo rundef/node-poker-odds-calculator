@@ -1,13 +1,14 @@
 /**
- * Tests for OddsCalculator
+ * Tests for OddsCalcualtor
  */
 import { expect } from 'chai';
-import { CardGroup, OddsCalculator } from '../src/index';
+ import * as _ from 'lodash';
+import { CardGroup, HandEquity, HandRank, OddsCalculator } from '../src/index';
 
 describe('OddsCalculator', () => {
   it('should throw exception if board has 1 or 2 cards', () => {
     const player1Cards: CardGroup = CardGroup.fromString('AcAh');
-    const player2Cards: CardGroup= CardGroup.fromString('7c7h');
+    const player2Cards: CardGroup = CardGroup.fromString('7c7h');
     let board: CardGroup = CardGroup.fromString('2d,Kd');
 
     expect(OddsCalculator.calculate.bind(null, [player1Cards, player2Cards], board))
@@ -100,7 +101,7 @@ describe('OddsCalculator', () => {
   it('no board', () => {
     const player1Cards: CardGroup = CardGroup.fromString('AcAh');
     const player2Cards: CardGroup = CardGroup.fromString('7c7h');
-    const result: OddsCalculator = OddsCalculator.calculate([player1Cards, player2Cards], null, 10000);
+    const result: OddsCalculator = OddsCalculator.calculate([player1Cards, player2Cards], null, null, 10000);
 
     const oddsPlayer1: number = result.equities[0].getEquity();
     const oddsPlayer2: number = result.equities[1].getEquity();
@@ -111,5 +112,53 @@ describe('OddsCalculator', () => {
 
     expect(oddsPlayer2).to.be.above(15);
     expect(oddsPlayer2).to.be.below(25);
+  });
+
+  it('public methods', () => {
+    const player1Cards: CardGroup = CardGroup.fromString('AcAh');
+    const player2Cards: CardGroup = CardGroup.fromString('7c7h');
+    let result: OddsCalculator = OddsCalculator.calculate([player1Cards, player2Cards], null, null, 10);
+
+    expect(result.getHandRank(1)).to.be.an.instanceof(HandRank);
+    expect(result.getHandRank(0)).to.be.an.instanceof(HandRank);
+    expect(result.getIterationCount()).to.be.equal(10);
+    expect(result.getElapsedTime()).to.be.below(3);
+
+    const origDefault: number = OddsCalculator.DEFAULT_ITERATIONS;
+    OddsCalculator.DEFAULT_ITERATIONS = 20;
+    result = OddsCalculator.calculate([player1Cards, player2Cards]);
+    expect(result.getIterationCount()).to.be.equal(20);
+    OddsCalculator.DEFAULT_ITERATIONS = origDefault;
+  });
+
+  it('HandEquity', () => {
+    let handEquity: HandEquity = new HandEquity();
+    let equity: number = handEquity.getEquity();
+    let ties: number = handEquity.getTiePercentage();
+    expect(equity).to.be.equal(0);
+    expect(ties).to.be.equal(0);
+    /**
+     * 10 wins, 2 ties, 8 losses
+     */
+    _.times(10, () => {
+      handEquity.addPossibility(true, false);
+    });
+    _.times(2, () => {
+      handEquity.addPossibility(false, true);
+    });
+    _.times(8, () => {
+      handEquity.addPossibility(false, false);
+    });
+    equity = handEquity.getEquity();
+    ties = handEquity.getTiePercentage();
+    expect(equity).to.be.equal(50);
+    expect(ties).to.be.equal(10);
+    let str: string = handEquity.toString();
+    expect(str).to.be.equal('50% (Tie: 10%)');
+
+    handEquity = new HandEquity();
+    handEquity.addPossibility(true, false);
+    str = handEquity.toString();
+    expect(str).to.be.equal('100%');
   });
 });
