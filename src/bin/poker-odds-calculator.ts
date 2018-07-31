@@ -1,7 +1,10 @@
 #!/usr/bin/env node
-import * as program from 'commander';
-import {CardGroup, OddsCalculator} from '../index';
+/**
+ * Odds Calculator CLI
+ */
 import * as chalk from 'chalk';
+ import * as program from 'commander';
+import {CardGroup, OddsCalculator} from '../index';
 
 program
     .option('-b, --board <cards>', 'sets the board')
@@ -19,8 +22,8 @@ try {
     throw new Error('You must enter at least 2 hands');
   }
 
-  const result = OddsCalculator.calculate(cardgroups, board);
-  const prepend = (board !== null ? '' : '~');
+  const result: OddsCalculator = OddsCalculator.calculate(cardgroups, board);
+  const prepend: string = (board !== null ? '' : '~');
 
   if (board) {
     console.log('Board: ' + chalk.yellow(board.toString()));
@@ -28,9 +31,9 @@ try {
   }
 
   let mostEquityIndex:Array<number> = [];
-  let mostEquity = 0;
-  for (let i = 0; i < cardgroups.length; i++) {
-    const curEquity = result.equities[i].getEquity() + result.equities[i].getTiePercentage();
+  let mostEquity: number = 0;
+  for (let i: number = 0; i < cardgroups.length; i++) {
+    const curEquity: number = result.equities[i].getEquity() + result.equities[i].getTiePercentage();
     if (curEquity >= mostEquity) {
       if (curEquity > mostEquity) {
         mostEquityIndex = [i];
@@ -41,9 +44,9 @@ try {
     }
   }
 
-  for (let i = 0; i < cardgroups.length; i++) {
-    const s = `Player #${i + 1} - ${cardgroups[i]} - ${prepend}${result.equities[i]}`;
-    const func = (mostEquityIndex.indexOf(i) >= 0 ? chalk.green : chalk.red);
+  for (let i: number = 0; i < cardgroups.length; i++) {
+    const s: string = `Player #${i + 1} - ${cardgroups[i]} - ${prepend}${result.equities[i]}`;
+    const func: Function = (mostEquityIndex.indexOf(i) >= 0 ? chalk.green : chalk.red);
     console.log(func(s));
   }
 

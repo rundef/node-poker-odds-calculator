@@ -1,10 +1,13 @@
-import {expect} from 'chai';
-import {CardGroup, Suit, Rank} from '../src/index';
+/**
+ * Tests for CardGroup class
+ */
+import { expect } from 'chai';
+import { CardGroup, Rank, Suit } from '../src/index';
 
 describe('CardGroup', () => {
   describe('fromString()', () => {
     it('parses correctly', () => {
-      let cardgroup = CardGroup.fromString('Jh');
+      let cardgroup: CardGroup = CardGroup.fromString('Jh');
       expect(cardgroup.length).to.equal(1);
 
       expect(cardgroup[0].getRank()).to.equal(Rank.JACK);
@@ -30,7 +33,7 @@ describe('CardGroup', () => {
 
   describe('toString()', () => {
     it('formats correctly', () => {
-      const strings = [
+      const strings: string[] = [
         'Ac 4d Th', 'Jh Qs'
       ];
       for (const s of strings) {
@@ -41,7 +44,7 @@ describe('CardGroup', () => {
 
   describe('sort()', () => {
     it('sorts asc correctly', () => {
-      const cardgroup = CardGroup.fromString('Ac 3d 5s 5h');
+      const cardgroup: CardGroup = CardGroup.fromString('Ac 3d 5s 5h');
       cardgroup.sortCards('asc');
 
       expect(cardgroup[0].getRank()).to.equal(Rank.THREE);
@@ -56,7 +59,7 @@ describe('CardGroup', () => {
     });
 
     it('sorts desc correctly', () => {
-      const cardgroup = CardGroup.fromString('Ac 3d 5s 5h');
+      const cardgroup: CardGroup = CardGroup.fromString('Ac 3d 5s 5h');
       cardgroup.sortCards('desc');
 
       expect(cardgroup[0].getRank()).to.equal(Rank.ACE);
