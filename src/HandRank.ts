@@ -128,25 +128,35 @@ export class HandRank {
 
     // Quads
     if (quadRanks.length == 1) {
-      const quadCards = _.filter(cardgroup, { rank: quadRanks[0] });
-      const cards = _.reject(cardgroup, { rank: quadRanks[0] });
+      const quadCards = _.filter(cardgroup, (card: Card) => card.getRank() === quadRanks[0]);
+      const cards = _.reject(cardgroup, (card: Card) => card.getRank() === quadRanks[0]);
       return new HandRank(HandRank.QUADS, quadCards.concat(cards).slice(0, 5));
     }
 
     // Full house
     if (tripRanks.length == 1 && pairRanks.length >= 1) {
-      const tripCards = _.filter(cardgroup, { rank: tripRanks[0] });
-      const pairCards = _.filter(cardgroup, { rank: pairRanks[0] });
+      const tripCards = _.filter(cardgroup, (card: Card): boolean => {
+        return card.getRank() === tripRanks[0]
+      });
+      const pairCards = _.filter(cardgroup, (card: Card): boolean => {
+        return card.getRank() === pairRanks[0]
+      });
       return new HandRank(HandRank.FULL_HOUSE, tripCards.concat(pairCards));
     } else if (tripRanks.length > 1) {
-      const tripCards = _.filter(cardgroup, { rank: tripRanks[0] });
-      const pairCards = _.filter(cardgroup, { rank: tripRanks[1] });
+      const tripCards = _.filter(cardgroup, (card: Card): boolean => {
+        return card.getRank() === tripRanks[0]
+      });
+      const pairCards = _.filter(cardgroup, (card: Card): boolean => {
+        return card.getRank() === tripRanks[1]
+      });
       return new HandRank(HandRank.FULL_HOUSE, tripCards.concat(pairCards.slice(0, 2)));
     }
 
     // Flush
     if (flushSuit > 0) {
-      const flushCards = _.filter(cardgroup, { suit: flushSuit });
+      const flushCards = _.filter(cardgroup, (card: Card): boolean => {
+        return card.getSuit() === flushSuit
+      });
       return new HandRank(HandRank.FLUSH, flushCards.slice(0, 5));
     }
 
@@ -181,25 +191,39 @@ export class HandRank {
 
     // Trips
     if (tripRanks.length == 1) {
-      const tripCards = _.filter(cardgroup, { rank: tripRanks[0] });
-      const cards = _.reject(cardgroup, { rank: tripRanks[0] });
+      const tripCards = _.filter(cardgroup, (card: Card): boolean => {
+        return card.getRank() === tripRanks[0]
+      });
+      const cards = _.reject(cardgroup, (card: Card): boolean => {
+        return card.getRank() === tripRanks[0]
+      });
       return new HandRank(HandRank.TRIPS, tripCards.concat(cards).slice(0, 5));  
     }
 
     // Two pairs
     if (pairRanks.length >= 2) {
-      const pairedHigherCards = _.filter(cardgroup, { rank: pairRanks[0] });
-      const pairedLowerCards = _.filter(cardgroup, { rank: pairRanks[1] });
+      const pairedHigherCards = _.filter(cardgroup, (card: Card): boolean => {
+        return card.getRank() === pairRanks[0]
+      });
+      const pairedLowerCards = _.filter(cardgroup, (card: Card): boolean => {
+        return card.getRank() === pairRanks[1]
+      });
       const unpairedCards = _.reject(
-        _.reject(cardgroup, { rank: pairRanks[0] }), { rank: pairRanks[1] }
+        _.reject(cardgroup, 
+            (card: Card) => card.getRank() === pairRanks[0]), 
+          (card: Card) => card.getRank() === pairRanks[1]
       );
       return new HandRank(HandRank.TWO_PAIRS, pairedHigherCards.concat(pairedLowerCards).concat(unpairedCards).slice(0, 5));  
     }
-
+    
     // One pair
     if (pairRanks.length == 1) {
-      const pairedCards = _.filter(cardgroup, { rank: pairRanks[0] });
-      const unpairedCards = _.reject(cardgroup, { rank: pairRanks[0] });
+      const pairedCards = _.filter(cardgroup, (card: Card): boolean => {
+        return card.getRank() === pairRanks[0]
+      });
+      const unpairedCards = _.reject(cardgroup, (card: Card): boolean => {
+        return card.getRank() === pairRanks[0]
+      });
       return new HandRank(HandRank.PAIR, pairedCards.concat(unpairedCards).slice(0, 5));  
     }
 
