@@ -4,8 +4,7 @@
  */
 import { expect } from 'chai';
 import { CardGroup, HandEquity, HandRank,
-         OddsCalculator, ShortDeckRank,
-         ShortDeckRules } from '../src';
+         OddsCalculator, ShortDeckGame, ShortDeckRank } from '../src';
 
 describe('OddsCalculator: short-deck', () => {
   it('no board', () => {
@@ -68,11 +67,11 @@ describe('OddsCalculator: short-deck', () => {
   });
 
   it('a-6-7-8-9 is a straight', () => {
-    const rules: ShortDeckRules = new ShortDeckRules();
+    const game: ShortDeckGame = new ShortDeckGame();
     const playerCards: CardGroup = CardGroup.fromString('7d6d');
     const board: CardGroup = CardGroup.fromString('8d9cAdJsAs');
-    const handrank: HandRank = HandRank.evaluate(rules, playerCards.concat(board));
-    expect(handrank.getRank()).to.be.equal(rules.STRAIGHT);
+    const handrank: HandRank = HandRank.evaluate(game, playerCards.concat(board));
+    expect(handrank.getRank()).to.be.equal(game.STRAIGHT);
     expect(handrank.getHighCards().length).to.equal(5);
     expect(handrank.getHighCards()[0].getRank()).to.equal(ShortDeckRank.NINE);
     expect(handrank.getHighCards()[1].getRank()).to.equal(ShortDeckRank.EIGHT);
@@ -83,11 +82,11 @@ describe('OddsCalculator: short-deck', () => {
   });
 
   it('ad-6d-7d-8d-9d is a straight flush', () => {
-    const rules: ShortDeckRules = new ShortDeckRules();
+    const game: ShortDeckGame = new ShortDeckGame();
     const playerCards: CardGroup = CardGroup.fromString('7d6d');
     const board: CardGroup = CardGroup.fromString('8d9dAdTsAs');
-    const handrank: HandRank = HandRank.evaluate(rules, playerCards.concat(board));
-    expect(handrank.getRank()).to.be.equal(rules.STRAIGHT_FLUSH);
+    const handrank: HandRank = HandRank.evaluate(game, playerCards.concat(board));
+    expect(handrank.getRank()).to.be.equal(game.STRAIGHT_FLUSH);
     expect(handrank.getHighCards()[0].getRank()).to.equal(ShortDeckRank.NINE);
     expect(handrank.getHighCards()[1].getRank()).to.equal(ShortDeckRank.EIGHT);
     expect(handrank.getHighCards()[2].getRank()).to.equal(ShortDeckRank.SEVEN);
@@ -104,9 +103,9 @@ describe('OddsCalculator: short-deck', () => {
   });
 
   it('deck only has 6 thru A', () => {
-    const ranks: ShortDeckRank = new ShortDeckRank();
+    const game: ShortDeckGame = new ShortDeckGame();
     const expected: number[] = [6, 7, 8, 9, 10, 11, 12, 13, 14];
-    ranks.all()
+    game.rank.all()
          .forEach((rank: number, i: number) => expect(rank).to.equal(expected[i]));
   });
 });

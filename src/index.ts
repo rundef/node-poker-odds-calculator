@@ -5,6 +5,6 @@
  */
 export { Card, Suit, Rank } from './Card';
 export { CardGroup } from './CardGroup';
-export { FullDeckRank, FullDeckRules, ShortDeckRank, ShortDeckRules } from './GameVariants';
+export { FullDeckGame, FullDeckRank, ShortDeckGame, ShortDeckRank } from './Game';
 export { HandRank } from './HandRank';
 export { HandEquity, OddsCalculator } from './OddsCalculator';

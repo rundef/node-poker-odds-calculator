@@ -4,7 +4,7 @@
 import * as _ from 'lodash';
 import { Card, Rank } from './Card';
 import { CardGroup } from './CardGroup';
-import { IGameRules } from './GameVariants';
+import { IGame } from './Game';
 
 export class HandRankAlias {
   public static HIGH_CARD: string = 'HIGH_CARD';
@@ -29,7 +29,7 @@ export class HandRank {
     this.highcards = highcards;
   }
 
-  public static evaluate(rules: IGameRules, cardgroup: CardGroup): HandRank {
+  public static evaluate(game: IGame, cardgroup: CardGroup): HandRank {
     cardgroup.sortCards('desc');
 
     // Group card by ranks
@@ -88,14 +88,14 @@ export class HandRank {
           }
 
           if (isStraightFlush) {
-            return new HandRank(rules.STRAIGHT_FLUSH, HandRankAlias.STRAIGHT_FLUSH, straightFlushCards.slice(0, 5));
+            return new HandRank(game.STRAIGHT_FLUSH, HandRankAlias.STRAIGHT_FLUSH, straightFlushCards.slice(0, 5));
           }
         } else if (straightFlushCards.length === 4 &&
           (
             // Five high straight (5-4-3-2-A)
-            (rules.A2345_STRAIGHT &&  straightFlushCards[0].getRank() === Rank.FIVE) ||
+            (game.A2345_STRAIGHT &&  straightFlushCards[0].getRank() === Rank.FIVE) ||
             // Five high straight (9-8-7-6-A)
-            (rules.A6789_STRAIGHT &&  straightFlushCards[0].getRank() === Rank.NINE)
+            (game.A6789_STRAIGHT &&  straightFlushCards[0].getRank() === Rank.NINE)
           )
         ) {
           const aceCards: Card[] = _.filter(cardgroup, (card: Card): boolean => {
@@ -103,15 +103,15 @@ export class HandRank {
           });
 
           if (aceCards.length) {
-            return new HandRank(rules.STRAIGHT_FLUSH, HandRankAlias.STRAIGHT_FLUSH, straightFlushCards.concat(aceCards[0]));
+            return new HandRank(game.STRAIGHT_FLUSH, HandRankAlias.STRAIGHT_FLUSH, straightFlushCards.concat(aceCards[0]));
           }
         }
       } else if (straightCardsCount === 4 &&
         (
           // Five high straight (5-4-3-2-A)
-          (rules.A2345_STRAIGHT && straightMaxCardRank === Rank.FIVE) ||
+          (game.A2345_STRAIGHT && straightMaxCardRank === Rank.FIVE) ||
           // Nine high straight (9-8-7-6-A)
-          (rules.A6789_STRAIGHT && straightMaxCardRank === Rank.NINE)
+          (game.A6789_STRAIGHT && straightMaxCardRank === Rank.NINE)
         )
       ) {
         const aceCards: Card[] = _.filter(cardgroup, (card: Card): boolean => {
@@ -122,7 +122,7 @@ export class HandRank {
             return card.getSuit() === flushSuit && card.getRank() <= straightMaxCardRank;
           });
           if (straightFlushCards.length === 4) {
-            return new HandRank(rules.STRAIGHT_FLUSH, HandRankAlias.STRAIGHT_FLUSH, straightFlushCards.concat(aceCards[0]).slice(0, 5));
+            return new HandRank(game.STRAIGHT_FLUSH, HandRankAlias.STRAIGHT_FLUSH, straightFlushCards.concat(aceCards[0]).slice(0, 5));
           }
         }
       }
@@ -132,7 +132,7 @@ export class HandRank {
     if (quadRanks.length === 1) {
       const quadCards: Card[] = _.filter(cardgroup, (card: Card) => card.getRank() === quadRanks[0]);
       const cards: Card[] = _.reject(cardgroup, (card: Card) => card.getRank() === quadRanks[0]);
-      return new HandRank(rules.QUADS, HandRankAlias.QUADS, quadCards.concat(cards).slice(0, 5));
+      return new HandRank(game.QUADS, HandRankAlias.QUADS, quadCards.concat(cards).slice(0, 5));
     }
 
     // Full house
@@ -143,7 +143,7 @@ export class HandRank {
       const pairCards: Card[] = _.filter(cardgroup, (card: Card): boolean => {
         return card.getRank() === pairRanks[0];
       });
-      return new HandRank(rules.FULL_HOUSE, HandRankAlias.FULL_HOUSE, tripCards.concat(pairCards));
+      return new HandRank(game.FULL_HOUSE, HandRankAlias.FULL_HOUSE, tripCards.concat(pairCards));
     } else if (tripRanks.length > 1) {
       const tripCards: Card[] = _.filter(cardgroup, (card: Card): boolean => {
         return card.getRank() === tripRanks[0];
@@ -151,7 +151,7 @@ export class HandRank {
       const pairCards: Card[] = _.filter(cardgroup, (card: Card): boolean => {
         return card.getRank() === tripRanks[1];
       });
-      return new HandRank(rules.FULL_HOUSE, HandRankAlias.FULL_HOUSE, tripCards.concat(pairCards.slice(0, 2)));
+      return new HandRank(game.FULL_HOUSE, HandRankAlias.FULL_HOUSE, tripCards.concat(pairCards.slice(0, 2)));
     }
 
     // Flush
@@ -159,7 +159,7 @@ export class HandRank {
       const flushCards: Card[] = _.filter(cardgroup, (card: Card): boolean => {
         return card.getSuit() === flushSuit;
       });
-      return new HandRank(rules.FLUSH, HandRankAlias.FLUSH, flushCards.slice(0, 5));
+      return new HandRank(game.FLUSH, HandRankAlias.FLUSH, flushCards.slice(0, 5));
     }
 
     // Straight
@@ -172,13 +172,13 @@ export class HandRank {
           return c1.getRank() === c2.getRank();
         }
       );
-      return new HandRank(rules.STRAIGHT, HandRankAlias.STRAIGHT, straightCards.slice(0, 5));
+      return new HandRank(game.STRAIGHT, HandRankAlias.STRAIGHT, straightCards.slice(0, 5));
     } else if (straightCardsCount === 4 &&
       (
         // Five high straight (5-4-3-2-A)
-        (rules.A2345_STRAIGHT && straightMaxCardRank === Rank.FIVE) ||
+        (game.A2345_STRAIGHT && straightMaxCardRank === Rank.FIVE) ||
         // Five high straight (9-8-7-6-A)
-        (rules.A6789_STRAIGHT && straightMaxCardRank === Rank.NINE)
+        (game.A6789_STRAIGHT && straightMaxCardRank === Rank.NINE)
       )
       ) {
       const aceCards: Card[] = _.filter(cardgroup, (card: Card): boolean => {
@@ -193,7 +193,7 @@ export class HandRank {
             return c1.getRank() === c2.getRank();
           }
         );
-        return new HandRank(rules.STRAIGHT, HandRankAlias.STRAIGHT, straightCards.concat(aceCards[0]).slice(0, 5));
+        return new HandRank(game.STRAIGHT, HandRankAlias.STRAIGHT, straightCards.concat(aceCards[0]).slice(0, 5));
       }
     }
 
@@ -205,7 +205,7 @@ export class HandRank {
       const cards: Card[] = _.reject(cardgroup, (card: Card): boolean => {
         return card.getRank() === tripRanks[0];
       });
-      return new HandRank(rules.TRIPS, HandRankAlias.TRIPS, tripCards.concat(cards).slice(0, 5));
+      return new HandRank(game.TRIPS, HandRankAlias.TRIPS, tripCards.concat(cards).slice(0, 5));
     }
 
     // Two pairs
@@ -222,7 +222,7 @@ export class HandRank {
           (card: Card) => card.getRank() === pairRanks[0]),
         (card: Card) => card.getRank() === pairRanks[1]
       );
-      return new HandRank(rules.TWO_PAIRS, HandRankAlias.TWO_PAIRS,
+      return new HandRank(game.TWO_PAIRS, HandRankAlias.TWO_PAIRS,
                           pairedHigherCards.concat(pairedLowerCards)
                                            .concat(unpairedCards)
                                            .slice(0, 5));
@@ -236,11 +236,11 @@ export class HandRank {
       const unpairedCards: Card[] = _.reject(cardgroup, (card: Card): boolean => {
         return card.getRank() === pairRanks[0];
       });
-      return new HandRank(rules.PAIR, HandRankAlias.PAIR, pairedCards.concat(unpairedCards).slice(0, 5));
+      return new HandRank(game.PAIR, HandRankAlias.PAIR, pairedCards.concat(unpairedCards).slice(0, 5));
     }
 
     // High card
-    return new HandRank(rules.HIGH_CARD, HandRankAlias.HIGH_CARD, cardgroup.slice(0, 5));
+    return new HandRank(game.HIGH_CARD, HandRankAlias.HIGH_CARD, cardgroup.slice(0, 5));
   }
 
   public getHighCards(): Card[] {

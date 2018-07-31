@@ -5,7 +5,7 @@
 import * as _ from 'lodash';
 import { Card, Rank, Suit } from './Card';
 import { CardGroup } from './CardGroup';
-import { FullDeckRank, FullDeckRules, IGameRules, ShortDeckRank, ShortDeckRules } from './GameVariants';
+import { FullDeckGame, IGame, ShortDeckGame } from './Game';
 import { HandRank } from './HandRank';
 export class HandEquity {
   protected possibleHandsCount: number;
@@ -106,15 +106,12 @@ export class OddsCalculator {
     }
     iterations = iterations || 0;
 
-    let gamerank: Rank;
-    let gamerules: IGameRules;
+    let game: IGame;
 
     if (gameVariant === 'short') {
-      gamerank = new ShortDeckRank();
-      gamerules = new ShortDeckRules();
+      game = new ShortDeckGame();
     } else {
-      gamerank = new FullDeckRank();
-      gamerules = new FullDeckRules();
+      game = new FullDeckGame();
     }
 
     let handranks: HandRank[] = [];
@@ -123,7 +120,7 @@ export class OddsCalculator {
     const remainingCards: CardGroup = new CardGroup();
     if (!board || board.length <= 4) {
       for (const suit of Suit.all()) {
-        for (const rank of gamerank.all()) {
+        for (const rank of game.rank.all()) {
           const c: Card = new Card(rank, suit);
           let isUsed: boolean = false;
 
@@ -161,7 +158,7 @@ export class OddsCalculator {
 
     // Figure out hand ranking
     handranks = cardgroups.map((cardgroup: CardGroup): HandRank => {
-      return HandRank.evaluate(gamerules, board ? cardgroup.concat(board) : cardgroup);
+      return HandRank.evaluate(game, board ? cardgroup.concat(board) : cardgroup);
     });
 
     const equities: HandEquity[] = cardgroups.map((cardgroup: CardGroup): HandEquity => {
@@ -173,7 +170,7 @@ export class OddsCalculator {
       let highestRankingIndex: number[] = [];
       for (let i: number = 0; i < cardgroups.length; i += 1) {
         const handranking: HandRank = HandRank.evaluate(
-          gamerules,
+          game,
           cardgroups[i].concat(simulatedBoard)
         );
         const isBetter: number = highestRanking
