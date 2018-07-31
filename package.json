@@ -9,7 +9,7 @@
   "typings": "./dts/index.d.ts",
   "scripts": {
     "build": "rm -rf dist/* && rm -rf dts/* && tsc",
-    "lint": "tslint ./src/{,**/}*.ts ./tests/{,**/}*.ts --format verbose",
+    "lint": "tslint --project tsconfig.json -e ./src/bin/*.ts ./src/{,**/}*.ts ./tests/{,**/}*.ts --format verbose",
     "test": "NODE_ENV=test mocha --recursive --timeout 4000 --compilers ts:ts-node/register --bail",
     "cover": "NODE_ENV=test nyc --report-dir coverage npm t"
   },

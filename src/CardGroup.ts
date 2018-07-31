@@ -1,10 +1,11 @@
-import {Card} from './Card';
+/**
+ * CardGroup
+ *
+ * a group of card objects
+ * (typically either a player's hand, or the shared board)
+ */
 import * as _ from 'lodash';
-
-interface UniqueRank {
-  rank: number;
-  count: number;
-}
+import {Card} from './Card';
 
 export class CardGroup extends Array {
   public constructor() {
@@ -12,20 +13,20 @@ export class CardGroup extends Array {
   }
 
   public static fromString(s: string): CardGroup {
-    const tmp = s.replace(/[^a-z0-9]/gi, '');
+    const tmp: string = s.replace(/[^a-z0-9]/gi, '');
     if (tmp.length % 2 !== 0) {
       throw new Error(`Invalid cards: ${s}`);
     }
 
-    const cardgroup = new CardGroup();
-    for (let i = 0; i < tmp.length; i = i + 2) {
+    const cardgroup: CardGroup = new CardGroup();
+    for (let i: number = 0; i < tmp.length; i = i + 2) {
       cardgroup.push(Card.fromString(tmp.substring(i, i + 2)));
     }
     return cardgroup;
   }
 
   public static fromCards(cards: Card[]): CardGroup {
-    const cardgroup = new CardGroup();
+    const cardgroup: CardGroup = new CardGroup();
     for (const card of cards) {
       cardgroup.push(card);
     }
@@ -45,15 +46,15 @@ export class CardGroup extends Array {
     return '' + this.join(' ');
   }
 
-  public sortCards(type: string): void {
-    const sorted = _.orderBy(this, ['rank', 'suit'], [type, type]);
+  public sortCards(cardType: string): void {
+    const sorted: Card[]  = _.orderBy(this, ['rank', 'suit'], [cardType, cardType]);
     this.splice.apply(this, (<any[]> [ 0, this.length ]).concat(
       sorted
     ));
   }
 
   public concat(cardgroup: CardGroup): CardGroup {
-    const ret = new CardGroup();
+    const ret: CardGroup = new CardGroup();
     for (const card of this) {
       ret.push(card);
     }
@@ -63,7 +64,7 @@ export class CardGroup extends Array {
     return ret;
   }
 
-  public countBy(type: string): any {
-    return _.countBy(this, type);
+  public countBy(cardType: string): any {
+    return _.countBy(this, cardType);
   }
 }

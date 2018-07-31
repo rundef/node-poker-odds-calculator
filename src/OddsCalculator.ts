@@ -1,7 +1,11 @@
-import {Card, Suit, Rank} from './Card';
+/**
+ * OddsCalculator
+ *
+ */
+import * as _ from 'lodash';
+import {Card, Rank, Suit} from './Card';
 import {CardGroup} from './CardGroup';
 import {HandRank} from './HandRank';
-import * as _ from 'lodash';
 
 export class HandEquity {
   protected possibleHandsCount: number;
@@ -15,11 +19,11 @@ export class HandEquity {
   }
 
   public addPossibility(isBestHand: boolean, isTie: boolean): void {
-    this.possibleHandsCount++;
+    this.possibleHandsCount += 1;
     if (isBestHand) {
-      this.bestHandCount++;
+      this.bestHandCount += 1;
     } else if (isTie) {
-      this.tieHandCount++;
+      this.tieHandCount += 1;
     }
   }
 
@@ -39,7 +43,7 @@ export class HandEquity {
 
   public toString(): string {
     let s: string = `${this.getEquity()}%`;
-    let tie: number = this.getTiePercentage();
+    const tie: number = this.getTiePercentage();
     if (tie > 0) {
       s += ` (Tie: ${tie}%)`;
     }
@@ -48,11 +52,11 @@ export class HandEquity {
 }
 
 export class OddsCalculator {
+  public equities: HandEquity[];
   protected odds: number[];
   protected handranks: HandRank[];
   protected iterations: number;
   protected elapsedTime: number;
-  public equities: HandEquity[];
 
   protected constructor(equities: HandEquity[], handranks: HandRank[], iterations: number, elapsedTime: number) {
     this.equities = equities;
@@ -61,22 +65,14 @@ export class OddsCalculator {
     this.elapsedTime = elapsedTime;
   }
 
-  public getIterationCount(): number {
-    return this.iterations;
-  }
-
-  public getElapsedTime(): number {
-    return this.elapsedTime;
-  }
-
   public static calculate(cardgroups: CardGroup[], board?: CardGroup, iterations?: number): OddsCalculator {
     if (board && [0, 3, 4, 5].indexOf(board.length) === -1) {
       throw new Error('The board must contain 0, 3, 4 or 5 cards');
     }
 
     // Detect duplicate cards
-    for (let i = 0; i < cardgroups.length; i++) {
-      for (let j = i + 1; j < cardgroups.length; j++) {
+    for (let i: number = 0; i < cardgroups.length; i += 1) {
+      for (let j: number = i + 1; j < cardgroups.length; j += 1) {
         for (const card of cardgroups[j]) {
           if (cardgroups[i].contains(card)) {
             throw new Error('Detected duplicate cards');
@@ -85,7 +81,7 @@ export class OddsCalculator {
       }
     }
     if (board && board.length) {
-      for (let i = 0; i < cardgroups.length; i++) {
+      for (let i: number = 0; i < cardgroups.length; i += 1) {
         for (const card of cardgroups[i]) {
           if (board.contains(card)) {
             throw new Error('Detected duplicate cards');
@@ -95,16 +91,15 @@ export class OddsCalculator {
     }
     iterations = iterations || 0;
 
-    let odds: number[] = [];
     let handranks: HandRank[] = [];
 
     // Find out which cards are left in the deck
-    let remainingCards = new CardGroup();
+    const remainingCards: CardGroup = new CardGroup();
     if (!board || board.length <= 4) {
       for (const suit of Suit.all()) {
         for (const rank of Rank.all()) {
-          const c = new Card(rank, suit);
-          let isUsed = false;
+          const c: Card = new Card(rank, suit);
+          let isUsed: boolean = false;
 
           if (board) {
             for (const boardCard of board) {
@@ -136,7 +131,7 @@ export class OddsCalculator {
       }
     }
 
-    const remainingCount = remainingCards.length;
+    const remainingCount: number = remainingCards.length;
 
     // Figure out hand ranking
     handranks = cardgroups.map((cardgroup: CardGroup): HandRank => {
@@ -147,23 +142,26 @@ export class OddsCalculator {
       return new HandEquity();
     });
 
-    const selectWinners = function(simulatedBoard: CardGroup) {
+    const selectWinners: Function = (simulatedBoard: CardGroup): void => {
       let highestRanking: HandRank = null;
-      let highestRankingIndex:Array<number> = [];
-      for (let i = 0; i < cardgroups.length; i++) {
-        const handranking = HandRank.evaluate(
+      let highestRankingIndex: number[] = [];
+      for (let i: number = 0; i < cardgroups.length; i += 1) {
+        const handranking: HandRank = HandRank.evaluate(
           cardgroups[i].concat(simulatedBoard)
         );
-        const isBetter = highestRanking
+        const isBetter: number = highestRanking
           ? handranking.compareTo(highestRanking)
           : -1;
         if (highestRanking === null || isBetter >= 0) {
-          if (isBetter == 0) highestRankingIndex.push(i);
-          else highestRankingIndex = [i];
+          if (isBetter === 0) {
+            highestRankingIndex.push(i);
+          } else {
+            highestRankingIndex = [i];
+          }
           highestRanking = handranking;
         }
       }
-      for (let i = 0; i < cardgroups.length; i++) {
+      for (let i: number = 0; i < cardgroups.length; i += 1) {
         let isWinning: boolean = false;
         let isTie: boolean = false;
 
@@ -177,13 +175,16 @@ export class OddsCalculator {
       }
     };
 
-    const jobStartedAt = +new Date();
+    const jobStartedAt: number = +new Date();
     if (!board || board.length === 0) {
       iterations = iterations || 100000;
 
-      for (let x = iterations; x > 0; x--) {
-        const index1 = _.random(0, remainingCount - 1);
-        let index2: number, index3: number, index4: number, index5: number;
+      for (let x: number = iterations; x > 0; x -= 1) {
+        const index1: number = _.random(0, remainingCount - 1);
+        let index2: number;
+        let index3: number;
+        let index4: number;
+        let index5: number;
 
         do {
           index2 = _.random(0, remainingCount - 1);
@@ -201,7 +202,7 @@ export class OddsCalculator {
           index5 = _.random(0, remainingCount - 1);
         } while (index5 === index1 || index5 === index2 || index5 === index3 || index5 === index4);
 
-        const simulatedBoard = CardGroup.fromCards([
+        const simulatedBoard: CardGroup = CardGroup.fromCards([
           remainingCards[index1],
           remainingCards[index2],
           remainingCards[index3],
@@ -216,25 +217,30 @@ export class OddsCalculator {
       selectWinners(board);
     } else if (board.length === 4) {
       for (const c of remainingCards) {
-        const simulatedBoard = board.concat(CardGroup.fromCards([c]));
-        iterations++;
+        const simulatedBoard: CardGroup = board.concat(CardGroup.fromCards([c]));
+        iterations += 1;
         selectWinners(simulatedBoard);
       }
     } else if (board.length === 3) {
-      for (let a = 0; a < remainingCount; a++) {
-        for (let b = a + 1; b < remainingCount; b++) {
-          let highestRanking: HandRank = null;
-          let highestRankingIndex = -1;
+      for (let a: number = 0; a < remainingCount; a += 1) {
+        for (let b: number = a + 1; b < remainingCount; b += 1) {
 
-          const simulatedBoard = board.concat(CardGroup.fromCards([remainingCards[a], remainingCards[b]]));
-          iterations++;
+          const simulatedBoard: CardGroup = board.concat(CardGroup.fromCards([remainingCards[a], remainingCards[b]]));
+          iterations += 1;
           selectWinners(simulatedBoard);
         }
       }
     }
-
-    const jobEndedAt = +new Date();
+    const jobEndedAt: number = +new Date();
     return new OddsCalculator(equities, handranks, iterations, jobEndedAt - jobStartedAt);
+  }
+
+  public getIterationCount(): number {
+    return this.iterations;
+  }
+
+  public getElapsedTime(): number {
+    return this.elapsedTime;
   }
 
   public getHandRank(index: number): HandRank {
