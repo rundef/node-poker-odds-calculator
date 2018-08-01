@@ -10,8 +10,8 @@ node_js:
 before_install:
   - npm config set progress=false
 
-#before_script:
-#  - npm run lint
+before_script:
+  - npm run lint
 
 script: npm run cover
 
