@@ -48,6 +48,7 @@ export class CardGroup extends Array {
 
   public sortCards(cardType: string): void {
     const sorted: Card[]  = _.orderBy(this, ['rank', 'suit'], [cardType, cardType]);
+    /* tslint:disable:no-any */
     this.splice.apply(this, (<any[]> [ 0, this.length ]).concat(
       sorted
     ));
@@ -64,7 +65,7 @@ export class CardGroup extends Array {
     return ret;
   }
 
-  public countBy(cardType: string): any {
+  public countBy(cardType: string): {[x: string]: number}  {
     return _.countBy(this, cardType);
   }
 }

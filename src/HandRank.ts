@@ -33,7 +33,7 @@ export class HandRank {
     cardgroup.sortCards('desc');
 
     // Group card by ranks
-    const countByRanks = cardgroup.countBy('rank');
+    const countByRanks: {[x: string]: number} = cardgroup.countBy('rank');
     const quadRanks: number[] = [];
     const tripRanks: number[] = [];
     const pairRanks: number[] = [];
@@ -62,7 +62,7 @@ export class HandRank {
     }
 
     // Group card by suit
-    const countBySuits: number[] = cardgroup.countBy('suit');
+    const countBySuits: {[x: string]: number} = cardgroup.countBy('suit');
     let flushSuit: number = 0;
     _.some(Object.keys(countBySuits), (suit: number) => {
       if (countBySuits[suit] >= 5) {
