@@ -1,10 +1,13 @@
-import {expect} from 'chai';
-import {Card, Suit, Rank} from '../src/index';
+/**
+ * Tests for Card class
+ */
+import { expect } from 'chai';
+import { Card, Rank, Suit } from '../src/index';
 
 describe('Card', () => {
   describe('fromString()', () => {
     it('parses correctly', () => {
-      let card = Card.fromString('Jh');
+      let card: Card = Card.fromString('Jh');
       expect(card.getRank()).to.equal(Rank.JACK);
       expect(card.getSuit()).to.equal(Suit.HEART);
 
@@ -30,12 +33,21 @@ describe('Card', () => {
 
   describe('toString()', () => {
     it('formats correctly', () => {
-      const strings = [
+      const strings: string[] = [
         'Ac', '4d', 'Th', 'Jh', 'Qs', 'Kd', '2s'
       ];
       for (const s of strings) {
         expect(Card.fromString(s).toString()).to.equal(s);
       }
+    });
+  });
+
+  describe('Rank', () => {
+    it('returns default list', () => {
+      const ranks: Rank = new Rank();
+      const list: number[] = ranks.all();
+      expect(list).to.be.length(13);
+      expect(list).to.be.an.instanceof(Array);
     });
   });
 });

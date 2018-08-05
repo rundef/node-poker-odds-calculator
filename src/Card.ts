@@ -1,3 +1,12 @@
+/**
+ * Card, Rank, and Suit classes
+ */
+
+interface ICardName {
+  singular: string;
+  plural: string;
+}
+
 export class Suit {
   public static CLUB: number = 1;
   public static DIAMOND: number = 2;
@@ -41,7 +50,7 @@ export class Rank {
   public static KING: number = 13;
   public static ACE: number = 14;
 
-  public static names = [
+  public static names: ICardName[] = [
     null,
     null,
     { singular: 'deuce', plural: 'deuces' },
@@ -59,13 +68,6 @@ export class Rank {
     { singular: 'ace', plural: 'aces' }
   ];
 
-  public static all(): number[] {
-    return [
-      Rank.TWO, Rank.THREE, Rank.FOUR, Rank.FIVE, Rank.SIX, Rank.SEVEN,
-      Rank.EIGHT, Rank.NINE, Rank.TEN, Rank.JACK, Rank.QUEEN, Rank.KING, Rank.ACE
-    ];
-  }
-
   public static fromString(s: string): number {
     switch (s) {
       case 't':
@@ -79,12 +81,19 @@ export class Rank {
       case 'a':
         return Rank.ACE;
       default:
-        const n = Number(s);
+        const n: number = Number(s);
         if (isNaN(n) || n < Rank.TWO || n > Rank.NINE) {
-          throw new Error(`Invalid card rank: ${s}`);  
+          throw new Error(`Invalid card rank: ${s}`);
         }
         return n;
     }
+  }
+
+  public all(): number[] {
+    return [
+      Rank.TWO, Rank.THREE, Rank.FOUR, Rank.FIVE, Rank.SIX, Rank.SEVEN,
+      Rank.EIGHT, Rank.NINE, Rank.TEN, Rank.JACK, Rank.QUEEN, Rank.KING, Rank.ACE
+    ];
   }
 }
 
@@ -95,6 +104,17 @@ export class Card {
   public constructor(rank: number, suit: number) {
     this.rank = rank;
     this.suit = suit;
+  }
+
+  public static fromString(s: string): Card {
+    const tmp: string = s.replace(/[^a-z0-9]/gi, '');
+    if (tmp.length !== 2) {
+      throw new Error(`Invalid card: ${tmp}`);
+    }
+    return new Card(
+      Rank.fromString(tmp[0].toLowerCase()),
+      Suit.fromString(tmp[1].toLowerCase())
+    );
   }
 
   public getRank(): number {
@@ -109,17 +129,6 @@ export class Card {
     return (this.getRank() === c.getRank() && this.getSuit() === c.getSuit());
   }
 
-  public static fromString(s: string): Card {
-    const tmp = s.replace(/[^a-z0-9]/gi, '');
-    if (tmp.length !== 2) {
-      throw new Error(`Invalid card: ${tmp}`);
-    }
-    return new Card(
-      Rank.fromString(tmp[0].toLowerCase()),
-      Suit.fromString(tmp[1].toLowerCase())
-    );
-  }
-
   public toString(suit: boolean = true, full?: boolean, plural?: boolean): string {
     if (full) {
       if (plural) {
@@ -128,7 +137,7 @@ export class Card {
       return Rank.names[this.rank].singular;
     }
 
-    let s = `${this.rank}`;
+    let s: string = `${this.rank}`;
     if (this.rank === 10) {
       s = 'T';
     } else if (this.rank === 11) {

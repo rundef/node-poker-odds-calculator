@@ -1,17 +1,21 @@
-import {expect} from 'chai';
-import {CardGroup, OddsCalculator} from '../src/index';
+/**
+ * Tests for Odds Calculator
+ * (Focused on Tie scenarios)
+ */
+import { expect } from 'chai';
+import { CardGroup, OddsCalculator } from '../src/index';
 
 describe('OddsCalculator (ties)', () => {
   it('no board', () => {
-    const player1Cards = CardGroup.fromString('AsAc');
-    const player2Cards = CardGroup.fromString('AhAd');
-    const result = OddsCalculator.calculate([player1Cards, player2Cards], null, 10000);
+    const player1Cards: CardGroup = CardGroup.fromString('AsAc');
+    const player2Cards: CardGroup = CardGroup.fromString('AhAd');
+    const result: OddsCalculator = OddsCalculator.calculate([player1Cards, player2Cards], null, null, 10000);
 
-    const oddsPlayer1 = result.equities[0].getEquity();
-    const oddsPlayer2 = result.equities[1].getEquity();
+    const oddsPlayer1: number = result.equities[0].getEquity();
+    const oddsPlayer2: number = result.equities[1].getEquity();
 
-    const tiePlayer1 = result.equities[0].getTiePercentage();
-    const tiePlayer2 = result.equities[1].getTiePercentage();
+    const tiePlayer1: number = result.equities[0].getTiePercentage();
+    const tiePlayer2: number = result.equities[1].getTiePercentage();
 
     // ~2.2 win for each
     expect(oddsPlayer1).to.be.at.least(2);
@@ -29,18 +33,18 @@ describe('OddsCalculator (ties)', () => {
   });
 
   it('no board #2', () => {
-    const player1Cards = CardGroup.fromString('AsAc');
-    const player2Cards = CardGroup.fromString('AhAd');
-    const player3Cards = CardGroup.fromString('KsKc');
-    const result = OddsCalculator.calculate([player1Cards, player2Cards, player3Cards], null, 10000);
+    const player1Cards: CardGroup = CardGroup.fromString('AsAc');
+    const player2Cards: CardGroup = CardGroup.fromString('AhAd');
+    const player3Cards: CardGroup = CardGroup.fromString('KsKc');
+    const result: OddsCalculator = OddsCalculator.calculate([player1Cards, player2Cards, player3Cards], null, null, 10000);
 
-    const oddsPlayer1 = result.equities[0].getEquity();
-    const oddsPlayer2 = result.equities[1].getEquity();
-    const oddsPlayer3 = result.equities[2].getEquity();
+    const oddsPlayer1: number = result.equities[0].getEquity();
+    const oddsPlayer2: number = result.equities[1].getEquity();
+    const oddsPlayer3: number = result.equities[2].getEquity();
 
-    const tiePlayer1 = result.equities[0].getTiePercentage();
-    const tiePlayer2 = result.equities[1].getTiePercentage();
-    const tiePlayer3 = result.equities[2].getTiePercentage();
+    const tiePlayer1: number = result.equities[0].getTiePercentage();
+    const tiePlayer2: number = result.equities[1].getTiePercentage();
+    const tiePlayer3: number = result.equities[2].getTiePercentage();
 
     // ~1.75 to win, ~75.63 to tie
     expect(oddsPlayer1).to.be.at.least(1);
@@ -65,19 +69,19 @@ describe('OddsCalculator (ties)', () => {
   });
 
   it('one card left', () => {
-    let player1Cards = CardGroup.fromString('6s5s');
-    let player2Cards = CardGroup.fromString('6h5h');
-    let player3Cards = CardGroup.fromString('8h8d');
-    let board = CardGroup.fromString('4s7s8c2c');
-    let result = OddsCalculator.calculate([player1Cards, player2Cards, player3Cards], board);
+    const player1Cards: CardGroup = CardGroup.fromString('6s5s');
+    const player2Cards: CardGroup = CardGroup.fromString('6h5h');
+    const player3Cards: CardGroup = CardGroup.fromString('8h8d');
+    const board: CardGroup = CardGroup.fromString('4s7s8c2c');
+    const result: OddsCalculator = OddsCalculator.calculate([player1Cards, player2Cards, player3Cards], board);
 
-    const oddsPlayer1 = result.equities[0].getEquity();
-    const oddsPlayer2 = result.equities[1].getEquity();
-    const oddsPlayer3 = result.equities[2].getEquity();
+    const oddsPlayer1: number = result.equities[0].getEquity();
+    const oddsPlayer2: number = result.equities[1].getEquity();
+    const oddsPlayer3: number = result.equities[2].getEquity();
 
-    const tiePlayer1 = result.equities[0].getTiePercentage();
-    const tiePlayer2 = result.equities[1].getTiePercentage();
-    const tiePlayer3 = result.equities[2].getTiePercentage();
+    const tiePlayer1: number = result.equities[0].getTiePercentage();
+    const tiePlayer2: number = result.equities[1].getTiePercentage();
+    const tiePlayer3: number = result.equities[2].getTiePercentage();
 
     // ~30.9 to win, ~38.98 to tie
     expect(oddsPlayer1).to.be.at.least(19);
@@ -102,19 +106,19 @@ describe('OddsCalculator (ties)', () => {
   });
 
   it('two cards left', () => {
-    let player1Cards = CardGroup.fromString('6s5s');
-    let player2Cards = CardGroup.fromString('6h5h');
-    let player3Cards = CardGroup.fromString('8h8d');
-    let board = CardGroup.fromString('4s7s8c');
-    let result = OddsCalculator.calculate([player1Cards, player2Cards, player3Cards], board);
+    const player1Cards: CardGroup = CardGroup.fromString('6s5s');
+    const player2Cards: CardGroup = CardGroup.fromString('6h5h');
+    const player3Cards: CardGroup = CardGroup.fromString('8h8d');
+    const board: CardGroup = CardGroup.fromString('4s7s8c');
+    const result: OddsCalculator = OddsCalculator.calculate([player1Cards, player2Cards, player3Cards], board);
 
-    const oddsPlayer1 = result.equities[0].getEquity();
-    const oddsPlayer2 = result.equities[1].getEquity();
-    const oddsPlayer3 = result.equities[2].getEquity();
+    const oddsPlayer1: number = result.equities[0].getEquity();
+    const oddsPlayer2: number = result.equities[1].getEquity();
+    const oddsPlayer3: number = result.equities[2].getEquity();
 
-    const tiePlayer1 = result.equities[0].getTiePercentage();
-    const tiePlayer2 = result.equities[1].getTiePercentage();
-    const tiePlayer3 = result.equities[2].getTiePercentage();
+    const tiePlayer1: number = result.equities[0].getTiePercentage();
+    const tiePlayer2: number = result.equities[1].getTiePercentage();
+    const tiePlayer3: number = result.equities[2].getTiePercentage();
 
     // ~30.9 to win, ~38.98 to tie
     expect(oddsPlayer1).to.be.at.least(30);

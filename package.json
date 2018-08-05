@@ -9,7 +9,7 @@
   "typings": "./dts/index.d.ts",
   "scripts": {
     "build": "rm -rf dist/* && rm -rf dts/* && tsc",
-    "lint": "tslint ./src/{,**/}*.ts ./tests/{,**/}*.ts --format verbose",
+    "lint": "tslint --project tsconfig.json -e ./src/bin/*.ts ./src/{,**/}*.ts ./tests/{,**/}*.ts --format verbose",
     "test": "NODE_ENV=test mocha --recursive --timeout 4000 --compilers ts:ts-node/register --bail",
     "cover": "NODE_ENV=test nyc --report-dir coverage npm t"
   },
@@ -42,10 +42,10 @@
     "@types/mocha": "^2.2.37",
     "@types/node": "^7.0.0",
     "chai": "^3.5.0",
-    "coveralls": "^2.11.15",
-    "mocha": "^2.5.3",
-    "nyc": "^8.4.0",
-    "ts-node": "^1.6.1",
+    "coveralls": "^3.0.2",
+    "mocha": "^5.2.0",
+    "nyc": "^13.0.1",
+    "ts-node": "^7.0.0",
     "tslint": "^4.3.1",
     "tslint-microsoft-contrib": "^4.0.0",
     "typescript": "^2.1.5"
