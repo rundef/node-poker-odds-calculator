@@ -2,7 +2,7 @@
  * Tests for CardGroup class
  */
 import { expect } from 'chai';
-import { CardGroup, Rank, Suit } from '../src/index';
+import { Card, CardGroup, Rank, Suit } from '../src/index';
 
 describe('CardGroup', () => {
   describe('fromString()', () => {
@@ -72,5 +72,21 @@ describe('CardGroup', () => {
       expect(cardgroup[3].getRank()).to.equal(Rank.THREE);
       expect(cardgroup[3].getSuit()).to.equal(Suit.DIAMOND);
     });
+  });
+
+  it('CardGroup contains', () => {
+    const cardgroup: CardGroup = CardGroup.fromString('Ac 3d 5s 5h');
+    let card: Card = Card.fromString('Ac');
+    expect(cardgroup.contains(card)).to.be.true;
+    card = Card.fromString('3d');
+    expect(cardgroup.contains(card)).to.be.true;
+    card = Card.fromString('5s');
+    expect(cardgroup.contains(card)).to.be.true;
+    card = Card.fromString('5h');
+    expect(cardgroup.contains(card)).to.be.true;
+    card = Card.fromString('Kc');
+    expect(cardgroup.contains(card)).to.be.false;
+    card = Card.fromString('Jc');
+    expect(cardgroup.contains(card)).to.be.false;
   });
 });
