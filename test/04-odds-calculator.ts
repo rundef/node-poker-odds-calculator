@@ -140,7 +140,7 @@ describe('OddsCalculator', () => {
   it('no board', () => {
     const player1Cards: CardGroup = CardGroup.fromString('AcAh');
     const player2Cards: CardGroup = CardGroup.fromString('7c7h');
-    const result: OddsCalculator = OddsCalculator.calculate([player1Cards, player2Cards], null, null, 10000);
+    const result: OddsCalculator = OddsCalculator.calculate([player1Cards, player2Cards], undefined, undefined, 10000);
 
     const oddsPlayer1: number = result.equities[0].getEquity();
     const oddsPlayer2: number = result.equities[1].getEquity();
@@ -156,7 +156,7 @@ describe('OddsCalculator', () => {
   it('public methods', () => {
     const player1Cards: CardGroup = CardGroup.fromString('AcAh');
     const player2Cards: CardGroup = CardGroup.fromString('7c7h');
-    let result: OddsCalculator = OddsCalculator.calculate([player1Cards, player2Cards], null, null, 10);
+    let result: OddsCalculator = OddsCalculator.calculate([player1Cards, player2Cards], undefined, undefined, 10);
 
     expect(result.getHandRank(1)).to.be.an.instanceof(HandRank);
     expect(result.getHandRank(0)).to.be.an.instanceof(HandRank);

@@ -10,7 +10,7 @@ describe('OddsCalculator: short-deck', () => {
   it('no board', () => {
     const player1Cards: CardGroup = CardGroup.fromString('AcAh');
     const player2Cards: CardGroup = CardGroup.fromString('JdTd');
-    const result: OddsCalculator = OddsCalculator.calculate([player1Cards, player2Cards], null, 'short', 10000);
+    const result: OddsCalculator = OddsCalculator.calculate([player1Cards, player2Cards], undefined, 'short', 10000);
 
     const oddsPlayer1: number = result.equities[0].getEquity();
     const oddsPlayer2: number = result.equities[1].getEquity();
