@@ -10,7 +10,7 @@ describe('OddsCalculator: short-deck', () => {
   it('no board', () => {
     const player1Cards: CardGroup = CardGroup.fromString('AcAh');
     const player2Cards: CardGroup = CardGroup.fromString('JdTd');
-    const result: OddsCalculator = OddsCalculator.calculate([player1Cards, player2Cards], null, 'short', 10000);
+    const result: OddsCalculator = OddsCalculator.calculate([player1Cards, player2Cards], undefined, 'short', 10000);
 
     const oddsPlayer1: number = result.equities[0].getEquity();
     const oddsPlayer2: number = result.equities[1].getEquity();
@@ -95,10 +95,17 @@ describe('OddsCalculator: short-deck', () => {
   });
 
   it('throws error when card lower than 6 given', () => {
-    const player1Cards: CardGroup = CardGroup.fromString('AcAh');
-    const player2Cards: CardGroup = CardGroup.fromString('Jd5d');
+    let player1Cards: CardGroup = CardGroup.fromString('AcAh');
+    let player2Cards: CardGroup = CardGroup.fromString('Jd5d');
 
     expect(OddsCalculator.calculate.bind(null, [player1Cards, player2Cards], null, 'short'))
+      .to.throw(Error, 'Only cards rank 6 through A are valid');
+
+    player1Cards = CardGroup.fromString('KsQs');
+    player2Cards = CardGroup.fromString('AdTd');
+    const board: CardGroup = CardGroup.fromString('JsTs5c');
+
+    expect(OddsCalculator.calculate.bind(null, [player1Cards, player2Cards], board, 'short'))
       .to.throw(Error, 'Only cards rank 6 through A are valid');
   });
 

@@ -3,7 +3,7 @@
  *
  */
 import * as _ from 'lodash';
-import { Card, Rank, Suit } from './Card';
+import { Card, Suit } from './Card';
 import { CardGroup } from './CardGroup';
 import { FullDeckGame, IGame, ShortDeckGame } from './Game';
 import { HandRank } from './HandRank';
@@ -71,39 +71,27 @@ export class OddsCalculator {
       throw new Error('The board must contain 0, 3, 4 or 5 cards');
     }
 
+    const allGroups: CardGroup[] = board ? cardgroups.concat(board) : cardgroups;
+    let allCards: Card[] = [];
+    allGroups.forEach((group: CardGroup) => {
+      allCards = allCards.concat(group);
+    });
     // Invalid card values
     if (gameVariant === 'short') {
-      const allGroups: CardGroup[] = board ? cardgroups.concat(board) : cardgroups;
-      allGroups.forEach((cardgroup: CardGroup[]) => {
-        for (let i: number = 0; i < cardgroup.length; i += 1) {
-          for (const card of cardgroups[i]) {
-            if (card.getRank() < 6) {
-              throw new Error('Only cards rank 6 through A are valid.');
-            }
-          }
+      allCards.forEach((card: Card) => {
+        if (card.getRank() < 6) {
+          throw new Error('Only cards rank 6 through A are valid.');
         }
       });
     }
+    const uniqCards: Card[] = _.uniqBy(allCards, (card: Card) => {
+      return card.getRank() + '-' + card.getSuit();
+    });
 
-    // Detect duplicate cards
-    for (let i: number = 0; i < cardgroups.length; i += 1) {
-      for (let j: number = i + 1; j < cardgroups.length; j += 1) {
-        for (const card of cardgroups[j]) {
-          if (cardgroups[i].contains(card)) {
-            throw new Error('Detected duplicate cards');
-          }
-        }
-      }
+    if (uniqCards.length !== allCards.length) {
+      throw new Error('Detected duplicate cards');
     }
-    if (board && board.length) {
-      for (let i: number = 0; i < cardgroups.length; i += 1) {
-        for (const card of cardgroups[i]) {
-          if (board.contains(card)) {
-            throw new Error('Detected duplicate cards');
-          }
-        }
-      }
-    }
+
     iterations = iterations || 0;
 
     let game: IGame;
