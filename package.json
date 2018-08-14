@@ -10,7 +10,7 @@
   "scripts": {
     "build": "rm -rf dist/* && rm -rf dts/* && tsc",
     "lint": "tslint --project tsconfig.json -e ./src/bin/*.ts ./src/{,**/}*.ts ./tests/{,**/}*.ts --format verbose",
-    "test": "NODE_ENV=test mocha --recursive --timeout 4000 --compilers ts:ts-node/register --bail",
+    "test": "NODE_ENV=test mocha --recursive --timeout 4000 --require ts-node/register --bail test/**/*.ts",
     "cover": "NODE_ENV=test nyc --report-dir coverage npm t"
   },
   "repository": {

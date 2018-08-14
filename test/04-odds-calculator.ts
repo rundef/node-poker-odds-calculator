@@ -1,8 +1,8 @@
 /**
- * Tests for OddsCalcualtor
+ * Tests for OddsCalculator
  */
 import { expect } from 'chai';
- import * as _ from 'lodash';
+import * as _ from 'lodash';
 import { CardGroup, HandEquity, HandRank, OddsCalculator } from '../src/index';
 
 describe('OddsCalculator', () => {

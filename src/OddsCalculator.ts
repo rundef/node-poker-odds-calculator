@@ -7,6 +7,7 @@ import { Card, Suit } from './Card';
 import { CardGroup } from './CardGroup';
 import { FullDeckGame, IGame, ShortDeckGame } from './Game';
 import { HandRank } from './HandRank';
+
 export class HandEquity {
   protected possibleHandsCount: number;
   protected bestHandCount: number;
