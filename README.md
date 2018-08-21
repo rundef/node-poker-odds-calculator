@@ -6,6 +6,8 @@
 
 A pre-flop and post-flop odds calculator for Texas Holdem.
 
+For a live demonstration of this library in action, check out [shortdeck.gg](https://shortdeck.gg)!
+
 ## Installation
 
 ```bash
