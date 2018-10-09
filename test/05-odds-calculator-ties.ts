@@ -61,7 +61,7 @@ describe('OddsCalculator (ties)', () => {
     expect(tiePlayer2).to.be.at.most(77);
 
     // ~20.29 to win, ~0.42 to tie
-    expect(oddsPlayer3).to.be.at.least(20);
+    expect(oddsPlayer3).to.be.at.least(19);
     expect(oddsPlayer3).to.be.at.most(21);
 
     expect(tiePlayer3).to.be.at.least(0);
