@@ -1,7 +1,7 @@
 /**
  * Game Variant Specfic Classes
  */
-import { Rank } from './Card';
+import { Rank } from './Card.js';
 
 /**
  * GameRules base class

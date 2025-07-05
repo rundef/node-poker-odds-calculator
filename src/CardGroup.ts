@@ -4,8 +4,9 @@
  * a group of card objects
  * (typically either a player's hand, or the shared board)
  */
-import * as _ from 'lodash';
-import {Card} from './Card';
+import countBy from 'lodash/countBy.js';
+import orderBy from 'lodash/orderBy.js';
+import {Card} from './Card.js';
 
 export class CardGroup extends Array {
   public constructor() {
@@ -46,9 +47,9 @@ export class CardGroup extends Array {
     return '' + this.join(' ');
   }
 
-  public sortCards(cardType: string): void {
-    const sorted: Card[]  = _.orderBy(this, ['rank', 'suit'], [cardType, cardType]);
-    /* tslint:disable:no-any */
+  public sortCards(orderType: "asc" | "desc"): void {
+    const sorted: Card[]  = orderBy(this, ['rank', 'suit'], [orderType, orderType]);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.splice.apply(this, (<any[]> [ 0, this.length ]).concat(
       sorted
     ));
@@ -66,6 +67,6 @@ export class CardGroup extends Array {
   }
 
   public countBy(cardType: string): {[x: string]: number}  {
-    return _.countBy(this, cardType);
+    return countBy(this, cardType);
   }
 }

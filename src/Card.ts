@@ -80,12 +80,13 @@ export class Rank {
         return Rank.KING;
       case 'a':
         return Rank.ACE;
-      default:
+      default: {
         const n: number = Number(s);
         if (isNaN(n) || n < Rank.TWO || n > Rank.NINE) {
           throw new Error(`Invalid card rank: ${s}`);
         }
         return n;
+      }
     }
   }
 
