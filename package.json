@@ -25,7 +25,7 @@
   "author": "Mickael Burguet <www.rundef.com>",
   "license": "MIT",
   "engines": {
-    "node": ">= 16.0.0",
+    "node": ">= 18.0.0",
     "npm": ">= 8"
   },
   "dependencies": {
@@ -37,7 +37,7 @@
     "@types/chai": "^5.2.2",
     "@types/lodash": "^4.14.52",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^16.0.0",
+    "@types/node": "^18.0.0",
     "@typescript-eslint/eslint-plugin": "^8.35.1",
     "@typescript-eslint/parser": "^8.35.1",
     "chai": "^5.2.0",
