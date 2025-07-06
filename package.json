@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "chalk": "^5.4.0",
-    "commander": "^14.0.0",
+    "commander": "^13.0.0",
     "lodash": "^4.17.4"
   },
   "devDependencies": {
