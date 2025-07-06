@@ -1,8 +1,7 @@
 # ♠️♥️ Poker Odds Calculator ♣️♦️
 
-[![Build Status](https://travis-ci.org/rundef/node-poker-odds-calculator.svg?branch=master)](https://travis-ci.org/rundef/node-poker-odds-calculator)
-[![Coverage Status](https://coveralls.io/repos/github/rundef/node-poker-odds-calculator/badge.svg?branch=master)](https://coveralls.io/github/rundef/node-poker-odds-calculator?branch=master)
-[![Latest Stable Version](https://img.shields.io/npm/v/poker-odds-calculator.svg)](https://www.npmjs.com/package/poker-odds-calculator)
+[![CI](https://github.com/rundef/node-poker-odds-calculator/actions/workflows/ci.yml/badge.svg)](https://github.com/rundef/node-poker-odds-calculator/actions/workflows/ci.yml)
+[![Latest Stable Version](https://img.shields.io/npm/v/poker-odds-calculator)](https://www.npmjs.com/package/poker-odds-calculator)
 
 > An easy-to-use pre-flop & post-flop odds calculator for Texas Hold'em and Short Deck Hold'em (6+)
 
@@ -71,10 +70,6 @@ For Short Deck odds:
 ```js
 const result = OddsCalculator.calculate([player1Cards, player2Cards], board, 'short');
 ```
-
-## 🌐 Live Demo
-
-See it in action at: (todo)
 
 ## 📄 License
 
