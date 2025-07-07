@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES6",
-    "module": "commonjs",
+    "module": "node16",
     "outDir": "./dist/",
     "sourceMap": true,
     "inlineSourceMap": false,
@@ -11,6 +11,7 @@
     "forceConsistentCasingInFileNames": true,
     "removeComments": false,
     "declaration": true,
+    "moduleResolution": "node16",
     "declarationDir": "./dts/"
   },
   "exclude": [

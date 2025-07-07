@@ -3,8 +3,8 @@
  *
  * import all app classes
  */
-export { Card, Suit, Rank } from './Card';
-export { CardGroup } from './CardGroup';
-export { FullDeckGame, FullDeckRank, ShortDeckGame, ShortDeckRank } from './Game';
-export { HandRank } from './HandRank';
-export { HandEquity, OddsCalculator } from './OddsCalculator';
+export { Card, Suit, Rank } from './Card.js';
+export { CardGroup } from './CardGroup.js';
+export { FullDeckGame, FullDeckRank, ShortDeckGame, ShortDeckRank } from './Game.js';
+export { HandRank } from './HandRank.js';
+export { HandEquity, OddsCalculator } from './OddsCalculator.js';

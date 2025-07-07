@@ -1,49 +1,56 @@
-# Poker Odds Calculator
+# ♠️♥️ Poker Odds Calculator ♣️♦️
 
-[![Build Status](https://travis-ci.org/rundef/node-poker-odds-calculator.svg?branch=master)](https://travis-ci.org/rundef/node-poker-odds-calculator)
-[![Coverage Status](https://coveralls.io/repos/github/rundef/node-poker-odds-calculator/badge.svg?branch=master)](https://coveralls.io/github/rundef/node-poker-odds-calculator?branch=master)
-[![Latest Stable Version](https://img.shields.io/npm/v/poker-odds-calculator.svg)](https://www.npmjs.com/package/poker-odds-calculator)
+[![CI](https://github.com/rundef/node-poker-odds-calculator/actions/workflows/ci.yml/badge.svg)](https://github.com/rundef/node-poker-odds-calculator/actions/workflows/ci.yml)
+[![Latest Stable Version](https://img.shields.io/npm/v/poker-odds-calculator)](https://www.npmjs.com/package/poker-odds-calculator)
 
-A pre-flop and post-flop odds calculator for Texas Holdem.
+> An easy-to-use pre-flop & post-flop odds calculator for Texas Hold'em and Short Deck Hold'em (6+)
 
-For a live demonstration of this library in action, check out [shortdeck.gg](https://shortdeck.gg)!
+## ✨ Features
 
-## Installation
+- ♠️ Texas Hold’em and Short Deck Hold’em support
+- ⚡ Fast odds calculation (CLI & API)
+- 🎲 Calculate equity for any number of hands
+- 🧑‍💻 Node.js & TypeScript ready
+- 🧪 100% tested, production ready
+
+## 📦 Installation
 
 ```bash
 npm install poker-odds-calculator
 ```
 
-## Console Usage
+## 🖥️ CLI Usage
 
-#### Pre-flop odds
+### Pre-Flop Odds
 
-Let's say that we want to know the odds of 3 pre-flop all-in players holding the following hands: J♥J♤ vs T♢T♤ vs A♧K♧ :
+Let's say we want to know the odds for these 3 hands: J♥J♠ vs T♦T♠ vs A♣K♣:
 
 ```bash
-node_modules/.bin/poker-odds-calculator JhJs TdTs AcKc
+npx poker-odds-calculator JhJs TdTs AcKc
 ```
 
-#### Post-flop odds
+#### Post-Flop Odds
 
-Let's say that we want to know the odds of a player holding the J♢ and the Q♢ against a player with the J♥ and the J♤ on a 7♢9♢T♤ board, with 2 cards to come :
+On a 7♦9♦T♠ board (with 2 cards to come), with two hands:
 
 ```bash
-node_modules/.bin/poker-odds-calculator -b 7d9dTs JhJs JdQd
-node_modules/.bin/poker-odds-calculator --board 7d9dTs7s JhJs JdQd
+npx poker-odds-calculator -b 7d9dTs JhJs JdQd
+npx poker-odds-calculator --board 7d9dTs7s JhJs JdQd
 ```
 > -b denotes the board
 
-#### Short deck
- To calculate odds for short deck, override the game variant with -g
+#### Short Deck
+
+To calculate odds using the short deck (6+) rules, override the game variant with -g/--game:
+
  ```bash
-node_modules/.bin/poker-odds-calculator -g short -b 7d9dTs JhJs JdQd
-node_modules/.bin/poker-odds-calculator --game short --board 7d9dTs7s JhJs JdQd
+npx poker-odds-calculator -g short -b 7d9dTs JhJs JdQd
+npx poker-odds-calculator --game short --board 7d9dTs7s JhJs JdQd
 ```
 
-## API Usage
+## 🛠️ API Usage
 
-Let's take the previous example, but use the API instead:
+Calculate odds programmatically in TypeScript/Node:
 
 ```js
 import {CardGroup, OddsCalculator} from 'poker-odds-calculator';
@@ -58,11 +65,12 @@ console.log(`Player #1 - ${player1Cards} - ${result.equities[0].getEquity()}%`);
 console.log(`Player #2 - ${player2Cards} - ${result.equities[1].getEquity()}%`);
 ```
 
-To use Short Deck:
+For Short Deck odds:
+
 ```js
 const result = OddsCalculator.calculate([player1Cards, player2Cards], board, 'short');
 ```
 
-## License
+## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.

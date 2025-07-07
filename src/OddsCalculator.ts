@@ -2,11 +2,12 @@
  * OddsCalculator
  *
  */
-import * as _ from 'lodash';
-import { Card, Suit } from './Card';
-import { CardGroup } from './CardGroup';
-import { FullDeckGame, IGame, ShortDeckGame } from './Game';
-import { HandRank } from './HandRank';
+import uniqBy from 'lodash/uniqBy.js';
+import random from 'lodash/random.js';
+import { Card, Suit } from './Card.js';
+import { CardGroup } from './CardGroup.js';
+import { FullDeckGame, IGame, ShortDeckGame } from './Game.js';
+import { HandRank } from './HandRank.js';
 
 export class HandEquity {
   protected possibleHandsCount: number;
@@ -85,7 +86,7 @@ export class OddsCalculator {
         }
       });
     }
-    const uniqCards: Card[] = _.uniqBy(allCards, (card: Card) => {
+    const uniqCards: Card[] = uniqBy(allCards, (card: Card) => {
       return card.getRank() + '-' + card.getSuit();
     });
 
@@ -150,11 +151,12 @@ export class OddsCalculator {
       return HandRank.evaluate(game, board ? cardgroup.concat(board) : cardgroup);
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const equities: HandEquity[] = cardgroups.map((cardgroup: CardGroup): HandEquity => {
       return new HandEquity();
     });
 
-    const selectWinners: Function = (simulatedBoard: CardGroup): void => {
+    const selectWinners = (simulatedBoard: CardGroup): void => {
       let highestRanking: HandRank = null;
       let highestRankingIndex: number[] = [];
       for (let i: number = 0; i < cardgroups.length; i += 1) {
@@ -193,26 +195,26 @@ export class OddsCalculator {
       iterations = iterations || OddsCalculator.DEFAULT_ITERATIONS;
 
       for (let x: number = iterations; x > 0; x -= 1) {
-        const index1: number = _.random(0, remainingCount - 1);
+        const index1: number = random(0, remainingCount - 1);
         let index2: number;
         let index3: number;
         let index4: number;
         let index5: number;
 
         do {
-          index2 = _.random(0, remainingCount - 1);
+          index2 = random(0, remainingCount - 1);
         } while (index2 === index1);
 
         do {
-          index3 = _.random(0, remainingCount - 1);
+          index3 = random(0, remainingCount - 1);
         } while (index3 === index1 || index3 === index2);
 
         do {
-          index4 = _.random(0, remainingCount - 1);
+          index4 = random(0, remainingCount - 1);
         } while (index4 === index1 || index4 === index2 || index4 === index3);
 
         do {
-          index5 = _.random(0, remainingCount - 1);
+          index5 = random(0, remainingCount - 1);
         } while (index5 === index1 || index5 === index2 || index5 === index3 || index5 === index4);
 
         const simulatedBoard: CardGroup = CardGroup.fromCards([

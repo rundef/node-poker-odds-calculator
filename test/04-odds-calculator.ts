@@ -2,7 +2,7 @@
  * Tests for OddsCalculator
  */
 import { expect } from 'chai';
-import * as _ from 'lodash';
+import times from 'lodash/times.js';
 import { CardGroup, HandEquity, HandRank, OddsCalculator } from '../src/index';
 
 describe('OddsCalculator', () => {
@@ -179,13 +179,13 @@ describe('OddsCalculator', () => {
     /**
      * 10 wins, 2 ties, 8 losses
      */
-    _.times(10, () => {
+    times(10, () => {
       handEquity.addPossibility(true, false);
     });
-    _.times(2, () => {
+    times(2, () => {
       handEquity.addPossibility(false, true);
     });
-    _.times(8, () => {
+    times(8, () => {
       handEquity.addPossibility(false, false);
     });
     equity = handEquity.getEquity();
